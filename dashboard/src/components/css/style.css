@@ -1,0 +1,15 @@
+.pointer {cursor: pointer;}
+
+.title-course {
+    height: 5rem;
+}
+
+b, strong {
+    background-color: transparent !important;
+    font-size: larger;
+    color: rgb(25,135,84) !important
+}
+
+p {
+    margin-bottom: 0rem !important;
+}

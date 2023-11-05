@@ -1,0 +1,26 @@
+.boxShadow {
+    box-shadow: 2px 2px 2px 2px rgb(223, 223, 223);
+}
+
+.backgroundColor {
+    background-color: white;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+a:hover {
+    color: blueviolet;
+}
+
+/* a:visited { text-decoration: none; } */
+/* a:hover { text-decoration: none; } */
+/* a:active { text-decoration: none; } */
+
+.minHeight {
+    min-height: calc(100vh - 66px);
+    min-height: -o-calc(100vh - 66px);/* opera */
+    min-height: -webkit-calc(100vh - 66px);/* google, safari */
+    min-height: -moz-calc(100vh - 66px);/* firefox */
+}

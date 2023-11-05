@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserRole extends Model
+class Schedule extends Model
 {
     use HasFactory;
 
-    protected $table = 'role_tbl';
-    protected $fillable = ['id', 'name', 'status', 'created_at', 'updated_at'];
+    protected $table = 'schedule_tbl';
+    protected $fillable = ['id', 'course_id', 'user_id', 'time', 'created_at', 'updated_at'];
     protected $hidden = [];
 }
