@@ -27,9 +27,9 @@ function AdminCourseSingle() {
             fetch(`http://127.0.0.1:8000/api/singleCourse?id=${id.id}`)
                 .then((res) => res.json())
                 .then((res) => {
-                    // console.log(JSON.parse(res[0].description));
-                    setParseModule(JSON.parse(res[0].description))
-                    setSingleCourse(res);
+                    console.log(res[0][0]);
+                    setParseModule(JSON.parse(res[0][0].description))
+                    setSingleCourse(res[0]);
 
                 });
         }
@@ -75,7 +75,7 @@ function AdminCourseSingle() {
                                                     <span className='fw-bold text-danger' >Tên</span>
                                                 </td>
                                                 <td>
-                                                    <span className='pointer fw-bold' >{item.name}</span>
+                                                    <span className=' fw-bold' >{item.name}</span>
                                                 </td>
                                             </tr>
                                             <tr className='align-middle'>
@@ -83,9 +83,9 @@ function AdminCourseSingle() {
                                                     <span className='fw-bold text-danger' >Trạng thái</span>
                                                 </td>
                                                 {item.status == 1 ?
-                                                    <td><span className='text-success pointer fw-bold ' >Mở</span></td>
+                                                    <td><span className='text-success  fw-bold ' >Mở</span></td>
                                                     :
-                                                    <td><span className='text-danger pointer fw-bold' >Khóa</span></td>
+                                                    <td><span className='text-danger  fw-bold' >Khóa</span></td>
                                                 }
                                             </tr>
                                             <tr className='align-middle'>
@@ -93,7 +93,7 @@ function AdminCourseSingle() {
                                                     <span className='fw-bold text-danger' >Thời gian / buổi</span>
                                                 </td>
                                                 <td>
-                                                    <span className='pointer fw-bold' >{item.duration}</span>
+                                                    <span className=' fw-bold' >{item.duration}</span>
                                                 </td>
                                             </tr>
                                             <tr className='align-middle'>
@@ -101,7 +101,7 @@ function AdminCourseSingle() {
                                                     <span className='fw-bold text-danger' >Giá</span>
                                                 </td>
                                                 <td>
-                                                    <span className='pointer fw-bold' >{Intl.NumberFormat('en-US').format(item.price)} vnd</span>
+                                                    <span className=' fw-bold' >{Intl.NumberFormat('en-US').format(item.price)} vnd</span>
                                                 </td>
                                             </tr>
                                             <tr className='align-middle'>
@@ -109,7 +109,7 @@ function AdminCourseSingle() {
                                                     <span className='fw-bold text-danger' >Giảm giá</span>
                                                 </td>
                                                 <td>
-                                                    <span className='pointer fw-bold' >{item.discount}%</span>
+                                                    <span className=' fw-bold' >{item.discount}%</span>
                                                 </td>
                                             </tr>
                                             <tr className='align-middle'>
@@ -117,7 +117,7 @@ function AdminCourseSingle() {
                                                     <span className='fw-bold text-danger' >Khối lớp</span>
                                                 </td>
                                                 <td>
-                                                    <span className='pointer fw-bold' >{item.grade}</span>
+                                                    <span className=' fw-bold' >{item.grade}</span>
                                                 </td>
                                             </tr>
                                             <tr className='align-middle'>
@@ -125,7 +125,7 @@ function AdminCourseSingle() {
                                                     <span className='fw-bold text-danger' >Tóm tắt</span>
                                                 </td>
                                                 <td>
-                                                    <span className='pointer fw-bold' >{item.summary}</span>
+                                                    <span className=' fw-bold' >{item.summary}</span>
                                                 </td>
                                             </tr>
                                             <tr className='align-middle'>

@@ -50,7 +50,7 @@ function SideBar() {
                             <a href="/AdminProcess">
                                 <div className="row">
                                     <div className="col-sm-2 align-middle"><TbListDetails /></div>
-                                    <div className="col-sm">Process</div>
+                                    <div className="col-sm">Lịch lớp</div>
                                 </div>
                             </a>
                         </li>
@@ -58,7 +58,7 @@ function SideBar() {
                             <a href="/AdminBill">
                                 <div className="row">
                                     <div className="col-sm-2 align-middle"><MdOutlineAttachMoney /></div>
-                                    <div className="col-sm">Bills</div>
+                                    <div className="col-sm">Hóa đơn</div>
                                 </div>
                             </a>
                         </li>

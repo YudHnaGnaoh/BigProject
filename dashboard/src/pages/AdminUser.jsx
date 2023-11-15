@@ -6,6 +6,7 @@ import "../components/css/style.css";
 import Swal from "sweetalert2";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import Pagination from 'react-bootstrap/Pagination';
 
 function AdminUser() {
   const Toast = Swal.mixin({
@@ -43,26 +44,51 @@ function AdminUser() {
   const [userId, setUserId] = useState("");
   const [userRoleId, setUserRoleId] = useState("");
   const [newUserRoleId, setNewUserRoleId] = useState("");
-  // ================= Edit End ==========================
+  // ================= Paginate ==========================
+  const [page, setPage] = useState(1)
+  const [perPage, setPerPage] = useState('')
+  const [lastPage, setLastPage] = useState('')
 
   useEffect(() => {
     if (!localStorage.getItem('email') || localStorage.getItem('role') != 6) {
       window.location.replace('/')
     } else {
-      fetch("http://127.0.0.1:8000/api/role")
+      fetch(`http://127.0.0.1:8000/api/role`)
         .then((res) => res.json())
         .then((res) => {
           // console.log(res);
           setUserRole(res);
         });
-      fetch("http://127.0.0.1:8000/api/user")
+      fetch(`http://127.0.0.1:8000/api/user?page=${page}`)
         .then((res) => res.json())
         .then((res) => {
           // console.log(res);
-          setUser(res);
+          setUser(res.data);
+          setPerPage(res.per_page)
+          setLastPage(res.last_page)
         });
     }
   }, []);
+
+  useEffect(() => {
+    fetch(`http://127.0.0.1:8000/api/user?page=${page}`)
+      .then((res) => res.json())
+      .then((res) => {
+        setUser(res.data);
+      });
+  }, [page])
+
+  // ====================== Paginate =================================================== 
+  let active = page;
+  let items = [];
+  for (let number = 1; number <= lastPage; number++) {
+    items.push(
+      <Pagination.Item key={number} active={number === active} onClick={() => setPage(number)}>
+        {number}
+      </Pagination.Item>,
+    );
+  }
+  // ====================== Paginate End =================================================== 
 
   const addRole = () => {
     if (newRole == "") {
@@ -206,7 +232,7 @@ function AdminUser() {
   };
 
   const addUser = () => {
-    console.log(newRole_id);
+    // console.log(newRole_id);
     if (newUser == "") {
       Toast.fire({
         icon: "error",
@@ -226,7 +252,7 @@ function AdminUser() {
       });
     } else {
       axios
-        .post("http://127.0.0.1:8000/api/createUser", {
+        .post(`http://127.0.0.1:8000/api/createUser?page=${page}`, {
           name: newUser,
           email: newUserEmail,
           role_id: newRole_id,
@@ -255,8 +281,9 @@ function AdminUser() {
               });
             }
           } else {
-            console.log(res.data);
-            setUser(res.data);
+            // console.log(res.data);
+            setUser(res.data.data);
+            setLastPage(res.data.last_page)
           }
         });
     }
@@ -285,7 +312,7 @@ function AdminUser() {
       });
     } else {
       axios
-        .post("http://127.0.0.1:8000/api/editUser", {
+        .post(`http://127.0.0.1:8000/api/editUser?page=${page}`, {
           id: userId,
           name: newUserName,
           role_id: newUserRoleId
@@ -315,7 +342,7 @@ function AdminUser() {
             }
           } else {
             // console.log(res.data);
-            setUser(res.data);
+            setUser(res.data.data);
             Toast.fire({
               icon: "success",
               title: "Sửa thành công",
@@ -334,12 +361,12 @@ function AdminUser() {
   const switchUser = (id) => {
     // console.log(id);
     axios
-      .post("http://127.0.0.1:8000/api/switchUser", {
+      .post(`http://127.0.0.1:8000/api/switchUser?page=${page}`, {
         id: id,
       })
       .then((res) => {
         // console.log(res.data);
-        setUser(res.data);
+        setUser(res.data.data);
       });
   };
 
@@ -355,7 +382,7 @@ function AdminUser() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post("http://127.0.0.1:8000/api/deleteUser", {
+          .post(`http://127.0.0.1:8000/api/deleteUser?page=${page}`, {
             id: id,
           })
           .then((res) => {
@@ -372,8 +399,9 @@ function AdminUser() {
                 });
               }
             } else {
-              // console.log(res.data);
-              setUser(res.data);
+              // console.log(res);
+              setUser(res.data.data);
+              setLastPage(res.data.last_page)
               Toast.fire({
                 icon: "success",
                 title: "Xóa thành công",
@@ -644,6 +672,25 @@ function AdminUser() {
                   </tbody>
                   <tfoot></tfoot>
                 </table>
+                {page < 2 ?
+                  <div className="d-flex">
+                    <Pagination><Pagination.Prev disabled /></Pagination>
+                    <Pagination>{items}</Pagination>
+                    <Pagination><Pagination.Next onClick={() => setPage(page + 1)} /></Pagination>
+                  </div>
+                  : page >= lastPage ?
+                    <div className="d-flex">
+                      <Pagination><Pagination.Prev onClick={() => setPage(page - 1)} /></Pagination>
+                      <Pagination>{items}</Pagination>
+                      <Pagination><Pagination.Next disabled /></Pagination>
+                    </div>
+                    :
+                    <div className="d-flex">
+                      <Pagination><Pagination.Prev onClick={() => setPage(page - 1)} /></Pagination>
+                      <Pagination>{items}</Pagination>
+                      <Pagination><Pagination.Next onClick={() => setPage(page + 1)} /></Pagination>
+                    </div>
+                }
               </div>
             </div>
           </div>

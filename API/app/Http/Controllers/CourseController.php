@@ -34,9 +34,20 @@ class CourseController extends Controller
         return response()->json($Courses);
     }
 
+    public function allCourse2(Request $request, Courses $Courses)
+    {
+        $Courses = DB::table('categories_tbl')
+            ->join('courses_tbl', 'categories_tbl.id', '=', 'courses_tbl.cate_id')
+            ->select('categories_tbl.id', 'courses_tbl.grade')
+            ->where('courses_tbl.status', 1)
+            ->distinct()->get();
+        return response()->json($Courses);
+    }
+
     public function sameGradeCourse(Request $request, Courses $Courses)
     {
-        $Courses = Courses::where('grade', $request->grade)->get();
+        $Courses = Courses::where('grade', $request->grade)
+            ->where('status', 1)->get();
         return response()->json($Courses);
     }
 
@@ -51,18 +62,22 @@ class CourseController extends Controller
         if ($Validator->fails()) {
             return response()->json(['check' => false, 'msg' => $Validator->errors()]);
         }
-        $Courses = Courses::where('id', $request->id)->get();
-        $Teacher = DB::table('schedule_tbl')
-        ->join('users_tbl', 'schedule_tbl.user_id','users_tbl.id')
-        ->where('schedule_tbl.course_id', $request->id)
-        ->select('schedule_tbl.*', 'schedule_tbl.id AS schedule_id', 'users_tbl.*')
-        ->get();
-        return response()->json([$Courses,$Teacher]);
+        $Courses = Courses::where('id', $request->id)->where('status', 1)->get();
+        if (count($Courses) == 0) {
+            return response()->json(['check' => false, 'msg' => 'Course is locked']);
+        } else {
+            $Teacher = DB::table('schedule_tbl')
+                ->join('users_tbl', 'schedule_tbl.user_id', 'users_tbl.id')
+                ->where('schedule_tbl.course_id', $request->id)
+                ->select('schedule_tbl.*', 'schedule_tbl.id AS schedule_id', 'users_tbl.*')
+                ->get();
+            return response()->json([$Courses, $Teacher]);
+        }
     }
 
     public function homePageCourse(Request $request, Courses $Courses)
     {
-        $Courses = Courses::orderByDesc('created_at')->limit(6)->get();
+        $Courses = Courses::where('status', 1)->orderByDesc('created_at')->limit(6)->get();
         return response()->json($Courses);
     }
 

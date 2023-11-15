@@ -10,6 +10,7 @@ import { useParams } from 'react-router-dom';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.bubble.css';
+import Pagination from 'react-bootstrap/Pagination';
 
 function AdminSchedule() {
 
@@ -41,6 +42,9 @@ function AdminSchedule() {
   const [teacher_id, setTeacher_id] = useState('');
   const [time, setTime] = useState([{ time: '' }]);
   const [edit_id, setEdit_id] = useState('')
+  const [page, setPage] = useState(1)
+  const [perPage, setPerPage] = useState('')
+  const [lastPage, setLastPage] = useState('')
   // const [from, setFrom] = useState('');
   // console.log(schedule);
   // console.log(course_id);
@@ -50,12 +54,12 @@ function AdminSchedule() {
     if (!localStorage.getItem('email') || localStorage.getItem('role') != 6) {
       window.location.replace('/')
     } else {
-      fetch(`http://127.0.0.1:8000/api/schedule`)
+      fetch(`http://127.0.0.1:8000/api/schedule?page=${page}`)
         .then((res) => res.json())
         .then((res) => {
           // console.log(res);
           var arr = []
-          res.forEach((el) => {
+          res.data.forEach((el) => {
             var item = new Object()
             // console.log(item);
             item.id = el.id;
@@ -77,8 +81,10 @@ function AdminSchedule() {
             item.time = parseTime
             arr.push(item)
           })
-          console.log(arr);
+          // console.log(arr);
           setSchedule(arr);
+          setPerPage(res.per_page)
+          setLastPage(res.last_page)
         });
       fetch(`http://127.0.0.1:8000/api/getCate`)
         .then((res) => res.json())
@@ -94,6 +100,41 @@ function AdminSchedule() {
         });
     }
   }, []);
+
+  useEffect(() => {
+    fetch(`http://127.0.0.1:8000/api/schedule?page=${page}`)
+      .then((res) => res.json())
+      .then((res) => {
+        // console.log(res);
+        var arr = []
+        res.data.forEach((el) => {
+          var item = new Object()
+          // console.log(item);
+          item.id = el.id;
+          item.course_id = el.course_id;
+          item.user_id = el.user_id;
+          item.cate_id = el.cate_id;
+          item.courseName = el.courseName;
+          item.grade = el.grade;
+          item.roleName = el.roleName;
+          item.userName = el.userName;
+          item.created_at = el.created_at;
+          var parseTime = JSON.parse(el.time);
+          // console.log(parseTime);
+          // var str = ''
+          // str += ''
+          // parseTime.forEach((el1) => {
+          //   str += el1
+          // })
+          item.time = parseTime
+          arr.push(item)
+        })
+        // console.log(arr);
+        setSchedule(arr);
+        setPerPage(res.per_page)
+        setLastPage(res.last_page)
+      });
+  }, [page])
 
   const runCourse = ((cate_id) => {
     // console.log(cate_id);
@@ -129,7 +170,8 @@ function AdminSchedule() {
     // console.log(course_id, teacher_id);
     // console.log(time);
     const stringify = JSON.stringify(time)
-    if (course_id == '' || teacher_id == '' || stringify == '') {
+    console.log(stringify);
+    if (course_id == '' || teacher_id == '') {
       Toast.fire({
         icon: 'error',
         title: 'Thiếu thông tin'
@@ -140,7 +182,7 @@ function AdminSchedule() {
       formData.append('course_id', course_id)
       formData.append('user_id', teacher_id)
       formData.append('time', stringify)
-      axios.post('http://127.0.0.1:8000/api/createSchedule',
+      axios.post(`http://127.0.0.1:8000/api/createSchedule?page=${page}`,
         formData,
         { headers: { 'content-Type': 'multipart/form-data' } })
         .then((res) => {
@@ -168,9 +210,9 @@ function AdminSchedule() {
             }
           }
           else {
-            // console.log(res.data);
+            console.log(res.data);
             var arr = []
-            res.data.forEach((el) => {
+            res.data.data.forEach((el) => {
               var item = new Object()
               item.id = el.id;
               item.course_id = el.course_id;
@@ -187,6 +229,7 @@ function AdminSchedule() {
             })
             console.log(arr);
             setSchedule(arr);
+            setLastPage(res.data.last_page)
             Toast.fire({
               icon: 'success',
               title: 'Thêm lịch giảng dạy'
@@ -214,7 +257,7 @@ function AdminSchedule() {
     // console.log(teacher_id);
     // console.log(stringify);
     else {
-      axios.post('http://127.0.0.1:8000/api/editSchedule', {
+      axios.post(`http://127.0.0.1:8000/api/editSchedule?page=${page}`, {
         id: edit_id,
         course_id: course_id,
         user_id: teacher_id,
@@ -252,7 +295,7 @@ function AdminSchedule() {
           else {
             // console.log(res.data);
             var arr = []
-            res.data.forEach((el) => {
+            res.data.data.forEach((el) => {
               var item = new Object()
               item.id = el.id;
               item.course_id = el.course_id;
@@ -269,6 +312,7 @@ function AdminSchedule() {
             })
             console.log(arr);
             setSchedule(arr);
+            handleClose2()
             Toast.fire({
               icon: 'success',
               title: 'Sửa thành công'
@@ -290,7 +334,7 @@ function AdminSchedule() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post('http://127.0.0.1:8000/api/deleteSchedule', {
+          .post(`http://127.0.0.1:8000/api/deleteSchedule?page=${page}`, {
             id: id,
           })
           .then((res) => {
@@ -311,7 +355,25 @@ function AdminSchedule() {
             }
             else {
               // console.log(res.data);
-              setSchedule(res.data);
+              var arr = []
+              res.data.data.forEach((el) => {
+                var item = new Object()
+                item.id = el.id;
+                item.course_id = el.course_id;
+                item.user_id = el.user_id;
+                item.cate_id = el.cate_id;
+                item.courseName = el.courseName;
+                item.grade = el.grade;
+                item.roleName = el.roleName;
+                item.userName = el.userName;
+                item.created_at = el.created_at;
+                var parseTime = JSON.parse(el.time);
+                item.time = parseTime
+                arr.push(item)
+              })
+              console.log(arr);
+              setSchedule(arr);
+              setLastPage(res.data.last_page)
               Toast.fire({
                 icon: "success",
                 title: "Xóa thành công",
@@ -321,6 +383,18 @@ function AdminSchedule() {
       }
     });
   }
+
+  // ====================== Paginate =================================================== 
+  let active = page;
+  let items = [];
+  for (let number = 1; number <= lastPage; number++) {
+    items.push(
+      <Pagination.Item key={number} active={number === active} onClick={() => setPage(number)}>
+        {number}
+      </Pagination.Item>,
+    );
+  }
+  // ====================== Paginate End =================================================== 
 
   return (
     <div>
@@ -340,7 +414,8 @@ function AdminSchedule() {
           </div>
           <div className="mb-3">
             <label className="form-label">Chọn lớp</label><br />
-            <select className='form-control' name="" defaultValue={''} onChange={(e) => setCourse_id(e.target.value)} id="">
+            <select className='form-control' name="" value={course_id} onChange={(e) => setCourse_id(e.target.value)} id="">
+            <option value={''} hidden>lớp</option>
               {!course || course == '' || course == null ?
                 null
                 :
@@ -352,7 +427,8 @@ function AdminSchedule() {
           </div>
           <div className="mb-3">
             <label className="form-label">Chọn giảng viên</label><br />
-            <select className='form-control' name="" onChange={(e) => setTeacher_id(e.target.value)} id="">
+            <select className='form-control' name="" defaultValue={teacher_id} onChange={(e) => setTeacher_id(e.target.value)} id="">
+              <option value={''} hidden>Chọn giáo viên</option>
               {!user_id || user_id == '' || user_id == null ?
                 null
                 :
@@ -366,7 +442,7 @@ function AdminSchedule() {
             <label className="form-label">Lịch giảng</label><br />
             {time && time.map((item, index) =>
               <div key={index}>
-                <ReactQuill className='mb-3' theme="snow" value={item.time} onChange={(value) => addModulTime(value, index)} />
+                <ReactQuill className='mb-3' theme="snow" defaultValue={''} value={item.time} onChange={(value) => addModulTime(value, index)} />
                 <div className='text-end'>
                   <button className='btn btn-danger mb-3' onClick={() => deleteModule(index)}>Xóa Module</button>
                 </div>
@@ -491,6 +567,25 @@ function AdminSchedule() {
               <tfoot>
               </tfoot>
             </table>
+            {page < 2 ?
+              <div className="d-flex">
+                <Pagination><Pagination.Prev disabled /></Pagination>
+                <Pagination>{items}</Pagination>
+                <Pagination><Pagination.Next onClick={() => setPage(page + 1)} /></Pagination>
+              </div>
+              : page >= lastPage ?
+                <div className="d-flex">
+                  <Pagination><Pagination.Prev onClick={() => setPage(page - 1)} /></Pagination>
+                  <Pagination>{items}</Pagination>
+                  <Pagination><Pagination.Next disabled /></Pagination>
+                </div>
+                :
+                <div className="d-flex">
+                  <Pagination><Pagination.Prev onClick={() => setPage(page - 1)} /></Pagination>
+                  <Pagination>{items}</Pagination>
+                  <Pagination><Pagination.Next onClick={() => setPage(page + 1)} /></Pagination>
+                </div>
+            }
           </div>
         </div>
       </div>

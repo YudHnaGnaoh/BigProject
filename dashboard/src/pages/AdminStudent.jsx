@@ -6,6 +6,7 @@ import "../components/css/style.css";
 import Swal from "sweetalert2";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import Pagination from 'react-bootstrap/Pagination';
 
 function AdminStudent() {
   const Toast = Swal.mixin({
@@ -34,20 +35,34 @@ function AdminStudent() {
   const [studentPhone, setStudentPhone] = useState("");
   const [newStudentPhone, setNewStudentPhone] = useState("");
   const [studentId, setStudentId] = useState("");
-  // ================= Edit End ==========================
+  // ================= Paginate ==========================
+  const [page, setPage] = useState(1)
+  const [perPage, setPerPage] = useState('')
+  const [lastPage, setLastPage] = useState('')
 
   useEffect(() => {
     if (!localStorage.getItem('email') || localStorage.getItem('role') != 6) {
       window.location.replace('/')
     } else {
-      fetch("http://127.0.0.1:8000/api/allStudents")
+      fetch(`http://127.0.0.1:8000/api/allStudents?page=${page}`)
         .then((res) => res.json())
         .then((res) => {
           // console.log(res);
-          setStudent(res);
+          setStudent(res.data);
+          setPerPage(res.per_page)
+          setLastPage(res.last_page)
         });
     }
   }, []);
+
+  useEffect(() => {
+    fetch(`http://127.0.0.1:8000/api/allStudents?page=${page}`)
+      .then((res) => res.json())
+      .then((res) => {
+        // console.log(res);
+        setStudent(res.data);
+      });
+  }, [page])
 
   const addStudent = () => {
     if (newStudent == "") {
@@ -61,7 +76,7 @@ function AdminStudent() {
         title: "Điền email",
       });
     } else if (
-      !newStudentEmail.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) 
+      !newStudentEmail.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
     ) {
       Toast.fire({
         icon: "error",
@@ -76,12 +91,13 @@ function AdminStudent() {
       });
     } else {
       axios
-        .post("http://127.0.0.1:8000/api/createStudent", {
+        .post(`http://127.0.0.1:8000/api/createStudent?page=${page}`, {
           name: newStudent,
           email: newStudentEmail,
           phone: addStudentPhone,
         })
         .then((res) => {
+          console.log(res);
           if (res.data.check == false) {
             if (res.data.msg.name) {
               Toast.fire({
@@ -100,8 +116,9 @@ function AdminStudent() {
               });
             }
           } else {
-            console.log(res.data);
-            setStudent(res.data);
+            // console.log(res.data);
+            setStudent(res.data.data);
+            setLastPage(res.data.last_page)
           }
         });
     }
@@ -130,12 +147,13 @@ function AdminStudent() {
       });
     } else {
       axios
-        .post("http://127.0.0.1:8000/api/editStudent", {
+        .post(`http://127.0.0.1:8000/api/editStudent?page=${page}`, {
           id: studentId,
           name: newStudentName,
           phone: newStudentPhone,
         })
         .then((res) => {
+          console.log(res.data);
           if (res.data.check == false) {
             if (res.data.msg.name) {
               Toast.fire({
@@ -154,8 +172,7 @@ function AdminStudent() {
               });
             }
           } else {
-            // console.log(res.data);
-            setStudent(res.data);
+            setStudent(res.data.data);
             Toast.fire({
               icon: "success",
               title: "Sửa thành công",
@@ -174,12 +191,12 @@ function AdminStudent() {
   const switchStudent = (id) => {
     // console.log(id);
     axios
-      .post("http://127.0.0.1:8000/api/switchStudent", {
+      .post(`http://127.0.0.1:8000/api/switchStudent?page=${page}`, {
         id: id,
       })
       .then((res) => {
         // console.log(res.data);
-        setStudent(res.data);
+        setStudent(res.data.data);
       });
   };
 
@@ -195,7 +212,7 @@ function AdminStudent() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post("http://127.0.0.1:8000/api/deleteStudent", {
+          .post(`http://127.0.0.1:8000/api/deleteStudent?page=${page}`, {
             id: id,
           })
           .then((res) => {
@@ -213,7 +230,8 @@ function AdminStudent() {
               }
             } else {
               // console.log(res.data);
-              setStudent(res.data);
+              setStudent(res.data.data);
+              setLastPage(res.data.last_page)
               Toast.fire({
                 icon: "success",
                 title: "Xóa thành công",
@@ -223,6 +241,18 @@ function AdminStudent() {
       }
     });
   };
+
+  // ====================== Paginate =================================================== 
+  let active = page;
+  let items = [];
+  for (let number = 1; number <= lastPage; number++) {
+    items.push(
+      <Pagination.Item key={number} active={number === active} onClick={() => setPage(number)}>
+        {number}
+      </Pagination.Item>,
+    );
+  }
+  // ====================== Paginate End =================================================== 
 
   return (
     <div>
@@ -374,6 +404,25 @@ function AdminStudent() {
                 </tbody>
                 <tfoot></tfoot>
               </table>
+              {page < 2 ?
+                <div className="d-flex">
+                  <Pagination><Pagination.Prev disabled /></Pagination>
+                  <Pagination>{items}</Pagination>
+                  <Pagination><Pagination.Next onClick={() => setPage(page + 1)} /></Pagination>
+                </div>
+                : page >= lastPage ?
+                  <div className="d-flex">
+                    <Pagination><Pagination.Prev onClick={() => setPage(page - 1)} /></Pagination>
+                    <Pagination>{items}</Pagination>
+                    <Pagination><Pagination.Next disabled /></Pagination>
+                  </div>
+                  :
+                  <div className="d-flex">
+                    <Pagination><Pagination.Prev onClick={() => setPage(page - 1)} /></Pagination>
+                    <Pagination>{items}</Pagination>
+                    <Pagination><Pagination.Next onClick={() => setPage(page + 1)} /></Pagination>
+                  </div>
+              }
             </div>
           </div>
         </div>

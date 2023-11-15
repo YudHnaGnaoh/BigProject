@@ -44,7 +44,7 @@ class UserController extends Controller
         $user = DB::Table('users_tbl')
             ->join('role_tbl', 'users_tbl.role_id', 'role_tbl.id')
             ->select('users_tbl.*', 'role_tbl.name as rolename')
-            ->get();
+            ->orderBy('users_tbl.email')->paginate(5);
         return response()->json($user);
     }
 
@@ -190,7 +190,7 @@ class UserController extends Controller
         ]);
         $user = DB::Table('users_tbl')->join('role_tbl', 'users_tbl.role_id', 'role_tbl.id')
             ->select('users_tbl.*', 'role_tbl.name as rolename')
-            ->get();
+            ->orderBy('users_tbl.email')->paginate(5);
         return response()->json($user);
     }
 
@@ -210,7 +210,7 @@ class UserController extends Controller
             User::where('id', $request->id)->delete();
             $user = DB::Table('users_tbl')->join('role_tbl', 'users_tbl.role_id', 'role_tbl.id')
                 ->select('users_tbl.*', 'role_tbl.name as rolename')
-                ->get();
+                ->paginate(5);
             return response()->json($user);
         } else {
             return response()->json(['check' => false, 'msg' => 'This user is in a class']);
@@ -237,7 +237,7 @@ class UserController extends Controller
         User::where('id', $request->id)->update(['name' => $request->name, 'role_id' => $request->role_id, 'updated_at' => now()]);
         $user = DB::Table('users_tbl')->join('role_tbl', 'users_tbl.role_id', 'role_tbl.id')
             ->select('users_tbl.*', 'role_tbl.name as rolename')
-            ->get();
+            ->orderBy('users_tbl.email')->paginate(5);
         return response()->json($user);
     }
 
@@ -261,7 +261,7 @@ class UserController extends Controller
         }
         $user = DB::Table('users_tbl')->join('role_tbl', 'users_tbl.role_id', 'role_tbl.id')
             ->select('users_tbl.*', 'role_tbl.name as rolename')
-            ->get();
+            ->orderBy('users_tbl.email')->paginate(5);
         return response()->json($user);
     }
 }

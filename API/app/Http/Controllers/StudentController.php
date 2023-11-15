@@ -41,7 +41,12 @@ class StudentController extends Controller
 
     public function allStudents(Request $request, Student $student)
     {
-        return response()->json(Student::all());
+        return response()->json(Student::orderBy('email')->paginate(5));
+    }
+
+    public function allStudents2(Request $request, Student $student)
+    {
+        return response()->json(Student::orderBy('email')->all());
     }
 
     public function createStudent(Request $request, Student $student)
@@ -69,7 +74,7 @@ class StudentController extends Controller
         Student::create([
             'name' => $request->name, 'email' => $request->email, 'phone' => $request->phone
         ]);
-        return response()->json(Student::all());
+        return response()->json(Student::paginate(5));
     }
 
     public function deleteStudent(Request $request, Student $student)
@@ -86,7 +91,7 @@ class StudentController extends Controller
         $checkStudent = Process::where('id', $request->id)->count(value('id'));
         if ($checkStudent == 0) {
             Student::where('id', $request->id)->delete();
-            return response()->json(Student::all());
+            return response()->json(Student::paginate(5));
         } else {
             return response()->json(['check' => false, 'msg' => 'This student is in a class']);
         }
@@ -110,7 +115,7 @@ class StudentController extends Controller
         }
 
         Student::where('id', $request->id)->update(['name' => $request->name, 'phone' => $request->phone, 'updated_at' => now()]);
-        return response()->json(Student::all());
+        return response()->json(Student::paginate(5));
     }
 
     public function switchStudent(Request $request, Student $student)
@@ -131,6 +136,6 @@ class StudentController extends Controller
         } else {
             Student::where('id', $request->id)->update(['status' => 1, 'updated_at' => now()]);
         }
-        return response()->json(Student::all());
+        return response()->json(Student::paginate(5));
     }
 }

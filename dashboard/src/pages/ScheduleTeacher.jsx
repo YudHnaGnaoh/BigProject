@@ -78,12 +78,15 @@ function ScheduleTeacher() {
                             }
                         }
                         else {
-                            Swal.fire('Đã xác nhận!', '', 'success')
                             fetch(`http://127.0.0.1:8000/api/teacherSchedule?email=${localStorage.getItem('email')}`)
                                 .then((res) => res.json())
                                 .then((res) => {
                                     console.log(res);
                                     setInfo(res)
+                                    Toast.fire({
+                                        icon: 'success',
+                                        title: 'Đã xác nhận!'
+                                    })
                                 })
                         }
                     })
@@ -105,8 +108,8 @@ function ScheduleTeacher() {
                                 <tr className='align-middle'>
                                     <th>Lớp</th>
                                     <th>Lịch học</th>
-                                    <th>Tổng số buổi</th>
-                                    <th>Số buổi đã học</th>
+                                    <th>Số lượng học sinh</th>
+                                    <th>Số buổi đã học / Tổng</th>
                                     <th>Cộng số buổi dạy</th>
                                 </tr>
                             </thead>
@@ -120,10 +123,10 @@ function ScheduleTeacher() {
                                             <span dangerouslySetInnerHTML={{ __html: item.schedule }}></span>
                                         </td>
                                         <td>
-                                            <span>{item.duration}</span>
+                                            <span>{item.student_count}</span>
                                         </td>
                                         <td>
-                                            <span>{item.pass}</span>
+                                            <span>{item.pass} / {item.duration}</span>
                                         </td>
                                         <td>
                                             <button className='btn btn-primary' onClick={() => taught(item.course_id, item.schedule)}>Xác nhận</button>

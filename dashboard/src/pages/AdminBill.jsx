@@ -6,6 +6,7 @@ import "../components/css/style.css";
 import Swal from "sweetalert2";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import Pagination from 'react-bootstrap/Pagination';
 
 
 function AdminBill() {
@@ -40,19 +41,30 @@ function AdminBill() {
   const [course_id, setCourse_id] = useState('')
   const [courseName, setCourseName] = useState('')
   const [bill_id, setBill_id] = useState('')
-
   const [schedule, setSchedule] = useState('')
+  const [page, setPage] = useState(1)
+  const [perPage, setPerPage] = useState('')
+  const [lastPage, setLastPage] = useState('')
+
   useEffect(() => {
     if (!localStorage.getItem('email') || localStorage.getItem('role') != 6) {
       window.location.replace('/')
     } else {
-      fetch("http://127.0.0.1:8000/api/getAllBill")
+      fetch(`http://127.0.0.1:8000/api/getAllBill?page=${page}`)
         .then((res) => res.json())
         .then((res) => {
           // console.log(res);
-          setInfo(res)
+          setInfo(res.data)
+          setPerPage(res.per_page)
+          setLastPage(res.last_page)
+          // setNextPage(res.next_page_url)
+          // setPreviousPage(res.prev_page_url)
+          // console.log(res.next_page_url);
+          // console.log(res.prev_page_url);
+          // console.log(res.last_page);
+
         })
-      fetch("http://127.0.0.1:8000/api/schedule")
+      fetch("http://127.0.0.1:8000/api/allSchedule")
         .then((res) => res.json())
         .then((res) => {
           var arr = []
@@ -83,6 +95,33 @@ function AdminBill() {
         })
     }
   }, [])
+
+  useEffect(() => {
+    fetch(`http://127.0.0.1:8000/api/getAllBill?page=${page}`)
+      .then((res) => res.json())
+      .then((res) => {
+        // console.log(res);
+        setInfo(res.data)
+        // setNextPage(res.next_page_url)
+        // setPreviousPage(res.prev_page_url)
+        // setLastPage(res.last_page)
+        // console.log(res.next_page_url);
+        // console.log(res.prev_page_url);
+        // console.log(res.last_page);
+      })
+  }, [page])
+
+  // ====================== Paginate =================================================== 
+  let active = page;
+  let items = [];
+  for (let number = 1; number <= lastPage; number++) {
+    items.push(
+      <Pagination.Item key={number} active={number === active} onClick={() => setPage(number)}>
+        {number}
+      </Pagination.Item>,
+    );
+  }
+  // ====================== Paginate End =================================================== 
 
   const makeProcess = (() => {
     setLoading(true)
@@ -161,11 +200,11 @@ function AdminBill() {
           setCourse_id('');
           setDuration('');
           setBill_id('');
-          fetch("http://127.0.0.1:8000/api/getAllBill")
+          fetch(`http://127.0.0.1:8000/api/getAllBill?page=${page}`)
             .then((res) => res.json())
             .then((res) => {
               // console.log(res);
-              setInfo(res)
+              setInfo(res.data)
             })
         }
       })
@@ -175,11 +214,11 @@ function AdminBill() {
     <div>
       {/* ============================================= Modal Student ============================================================ */}
       <Modal show={show} onHide={handleClose}>
-          {loading == true &&
-            <div className='text-center position-fixed' style={{ zIndex: '100', width:'500px' }}>
-              <img className='' style={{ height: '40vh', marginTop: '20vh' }} src="https://img.pikbest.com/png-images/20190918/cartoon-snail-loading-loading-gif-animation_2734139.png!sw800" alt="" />
-            </div>
-          }
+        {loading == true &&
+          <div className='text-center position-fixed' style={{ zIndex: '100', width: '500px' }}>
+            <img className='' style={{ height: '40vh', marginTop: '20vh' }} src="https://img.pikbest.com/png-images/20190918/cartoon-snail-loading-loading-gif-animation_2734139.png!sw800" alt="" />
+          </div>
+        }
         <Modal.Header closeButton>
           <Modal.Title>Xếp lớp</Modal.Title>
         </Modal.Header>
@@ -262,7 +301,7 @@ function AdminBill() {
                 {info && info.map((item, index) =>
                   <tr key={index}>
                     <td>
-                      <span className='fw-bold'>{++index}</span>
+                      <span className='fw-bold'>{(index + ((page - 1) * perPage)) + 1}</span>
                     </td>
                     <td>
                       <span className='fw-bold'>Name: {item.student_name}</span><br />
@@ -276,7 +315,7 @@ function AdminBill() {
                       <span className='fw-bold' dangerouslySetInnerHTML={{ __html: item.schedule }}></span>
                     </td>
                     <td>
-                      <span className='fw-bold'>{item.duration}</span>
+                      <span className='fw-bold'>{item.duration} buổi</span>
                     </td>
                     <td>
                       {item.bill_status == 0 ?
@@ -291,6 +330,26 @@ function AdminBill() {
               <tfoot>
               </tfoot>
             </table>
+
+            {page < 2 ?
+              <div className="d-flex">
+                <Pagination><Pagination.Prev disabled /></Pagination>
+                <Pagination>{items}</Pagination>
+                <Pagination><Pagination.Next onClick={() => setPage(page + 1)} /></Pagination>
+              </div>
+              : page >= lastPage ?
+                <div className="d-flex">
+                  <Pagination><Pagination.Prev onClick={() => setPage(page - 1)} /></Pagination>
+                  <Pagination>{items}</Pagination>
+                  <Pagination><Pagination.Next disabled /></Pagination>
+                </div>
+                :
+                <div className="d-flex">
+                  <Pagination><Pagination.Prev onClick={() => setPage(page - 1)} /></Pagination>
+                  <Pagination>{items}</Pagination>
+                  <Pagination><Pagination.Next onClick={() => setPage(page + 1)} /></Pagination>
+                </div>
+            }
           </div>
         </div>
       </div>

@@ -16,6 +16,12 @@ class EducationController extends Controller
         return response()->json($education);
     }
 
+    public function education2(Request $request, Education $education)
+    {
+        $education = Education::where('status', 1)->get();
+        return response()->json($education);
+    }
+
     public function createEducation(Request $request, Education $education)
     {
         $Validator = Validator::make($request->all(), [

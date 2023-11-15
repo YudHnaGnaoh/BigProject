@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Categories;
 use App\Models\Courses;
+use App\Models\Process;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Schedule;
@@ -20,7 +21,18 @@ class ScheduleController extends Controller
             ->join('users_tbl', 'schedule_tbl.user_id', '=', 'users_tbl.id')
             ->join('role_tbl', 'users_tbl.role_id', '=', 'role_tbl.id')
             ->select('schedule_tbl.*', 'courses_tbl.name AS courseName', 'courses_tbl.cate_id AS cate_id', 'courses_tbl.grade', 'users_tbl.name AS userName', 'role_tbl.name AS roleName')
-            ->get();
+            ->orderBy('courseName')->paginate(5);
+        return response()->json($schedule);
+    }
+
+    public function allSchedule(Request $request, Schedule $schedule)
+    {
+        $schedule = DB::table('schedule_tbl')
+            ->join('courses_tbl', 'schedule_tbl.course_id', '=', 'courses_tbl.id')
+            ->join('users_tbl', 'schedule_tbl.user_id', '=', 'users_tbl.id')
+            ->join('role_tbl', 'users_tbl.role_id', '=', 'role_tbl.id')
+            ->select('schedule_tbl.*', 'courses_tbl.name AS courseName', 'courses_tbl.cate_id AS cate_id', 'courses_tbl.grade', 'users_tbl.name AS userName', 'role_tbl.name AS roleName')
+            ->orderBy('courseName')->get();
         return response()->json($schedule);
     }
 
@@ -69,14 +81,19 @@ class ScheduleController extends Controller
             return response()->json(['check' => false, 'msg' => $Validator->errors()]);
         }
 
-        Schedule::create(['course_id' => $request->course_id, 'user_id' => $request->user_id, 'time' => $request->time, 'created_at' => now()]);
-        $schedule = DB::table('schedule_tbl')
-            ->join('courses_tbl', 'schedule_tbl.course_id', '=', 'courses_tbl.id')
-            ->join('users_tbl', 'schedule_tbl.user_id', '=', 'users_tbl.id')
-            ->join('role_tbl', 'users_tbl.role_id', '=', 'role_tbl.id')
-            ->select('schedule_tbl.*', 'courses_tbl.name AS courseName', 'courses_tbl.cate_id AS cate_id', 'courses_tbl.grade', 'users_tbl.name AS userName', 'role_tbl.name AS roleName')
-            ->get();
-        return response()->json($schedule);
+        $check = Schedule::where('course_id', $request->course_id)->first();
+        if ($check) {
+            return response()->json(['check' => false, 'msg' => 'This schedule already exist, you can edit it']);
+        } else {
+            Schedule::create(['course_id' => $request->course_id, 'user_id' => $request->user_id, 'time' => $request->time, 'created_at' => now()]);
+            $schedule = DB::table('schedule_tbl')
+                ->join('courses_tbl', 'schedule_tbl.course_id', '=', 'courses_tbl.id')
+                ->join('users_tbl', 'schedule_tbl.user_id', '=', 'users_tbl.id')
+                ->join('role_tbl', 'users_tbl.role_id', '=', 'role_tbl.id')
+                ->select('schedule_tbl.*', 'courses_tbl.name AS courseName', 'courses_tbl.cate_id AS cate_id', 'courses_tbl.grade', 'users_tbl.name AS userName', 'role_tbl.name AS roleName')
+                ->orderBy('courseName')->paginate(5);
+            return response()->json($schedule);
+        }
     }
 
     public function deleteSchedule(Request $request, Schedule $schedule)
@@ -90,14 +107,20 @@ class ScheduleController extends Controller
         if ($Validator->fails()) {
             return response()->json(['check' => false, 'msg' => $Validator->errors()]);
         }
-        Schedule::where('id', $request->id)->delete();
-        $schedule = DB::table('schedule_tbl')
-            ->join('courses_tbl', 'schedule_tbl.course_id', '=', 'courses_tbl.id')
-            ->join('users_tbl', 'schedule_tbl.user_id', '=', 'users_tbl.id')
-            ->join('role_tbl', 'users_tbl.role_id', '=', 'role_tbl.id')
-            ->select('schedule_tbl.*', 'courses_tbl.name AS courseName', 'courses_tbl.cate_id AS cate_id', 'courses_tbl.grade', 'users_tbl.name AS userName', 'role_tbl.name AS roleName')
-            ->get();
-        return response()->json($schedule);
+        $course_id = Schedule::where('id', $request->id)->value('course_id');
+        $check = Process::where('course_id', $course_id)->get();
+        if (count($check) != 0) {
+            return response()->json(['check' => false, 'msg' => 'This schedule is in another process']);
+        } else {
+            Schedule::where('id', $request->id)->delete();
+            $schedule = DB::table('schedule_tbl')
+                ->join('courses_tbl', 'schedule_tbl.course_id', '=', 'courses_tbl.id')
+                ->join('users_tbl', 'schedule_tbl.user_id', '=', 'users_tbl.id')
+                ->join('role_tbl', 'users_tbl.role_id', '=', 'role_tbl.id')
+                ->select('schedule_tbl.*', 'courses_tbl.name AS courseName', 'courses_tbl.cate_id AS cate_id', 'courses_tbl.grade', 'users_tbl.name AS userName', 'role_tbl.name AS roleName')
+                ->orderBy('courseName')->paginate(5);
+            return response()->json($schedule);
+        }
     }
 
     public function editSchedule(Request $request, Schedule $schedule)
@@ -126,7 +149,7 @@ class ScheduleController extends Controller
             ->join('users_tbl', 'schedule_tbl.user_id', '=', 'users_tbl.id')
             ->join('role_tbl', 'users_tbl.role_id', '=', 'role_tbl.id')
             ->select('schedule_tbl.*', 'courses_tbl.name AS courseName', 'courses_tbl.cate_id AS cate_id', 'courses_tbl.grade', 'users_tbl.name AS userName', 'role_tbl.name AS roleName')
-            ->get();
+            ->orderBy('courseName')->paginate(5);
         return response()->json($schedule);
     }
 }

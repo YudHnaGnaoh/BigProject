@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\sendMail;
 use App\Mail\sendMail2;
+use App\Mail\sendMailSignUp;
 use App\Models\Bills;
 use App\Models\Courses;
 use App\Models\Process;
@@ -87,7 +88,8 @@ class MailController extends Controller
                 'courses_tbl.name AS course_name',
                 'students_tbl.id AS student_id'
             )
-            ->get();
+            ->orderByDesc('bills_tbl.created_at')
+            ->paginate(5);
         return response()->json($bill);
     }
 
@@ -160,5 +162,38 @@ class MailController extends Controller
             return response()->json(['check' => false, 'msg' => 'This student is already in this class']);
         }
         return response()->json(['check' => true]);
+    }
+
+    public function signUp(Request $request)
+    {
+        $Validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|email',
+            'category' => 'required',
+        ], [
+            'name.required' => 'Missing name',
+            'email.required' => 'Missing email',
+            'email.email' => 'Needs to be an email',
+            'category.required' => 'Missing category',
+        ]);
+        if ($Validator->fails()) {
+            return response()->json(['check' => false, 'msg' => $Validator->errors()]);
+        }
+
+        $student = Student::where('email', $request->email)->first();
+        if ($student) {
+            return response()->json(['check' => false, 'msg' => 'You already have an account']);
+        } else {
+            $mailData = [
+                'name' => $request->name,
+                'phone' => $request->phone,
+                'email' => $request->email,
+                'category' => $request->category,
+            ];
+            Mail::to($request->email)
+                ->cc('duyanh55182124@gmail.com')
+                ->send(new sendMailSignUp($mailData));
+            return response()->json(['check' => true, 'msg' => 'Check your mail']);
+        }
     }
 }

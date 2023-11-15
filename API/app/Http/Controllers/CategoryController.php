@@ -30,6 +30,12 @@ class CategoryController extends Controller
         return response()->json($categories);
     }
 
+    public function allCategory2(Request $request, Categories $categories)
+    {
+        $categories = Categories::where('status', 1)->get();
+        return response()->json($categories);
+    }
+
     public function createCategory(Request $request, Categories $categories)
     {
         $Validator = Validator::make($request->all(), [

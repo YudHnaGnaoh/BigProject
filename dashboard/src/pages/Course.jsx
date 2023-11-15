@@ -36,17 +36,22 @@ function Course() {
         fetch(`http://127.0.0.1:8000/api/singleCourse?id=${id.id}`)
             .then((res) => res.json())
             .then((res) => {
-                // console.log(res);
-                // console.log(res[0][0]);
-                // console.log(res[0][0].description);
-                setCourse(res[0][0]);
-                setParse(JSON.parse(res[0][0].description))
-                // console.log(res[1][0]);
-                if (res[1][0]) {
-                    setSchedule_id(res[1][0].schedule_id);
-                    setTeacher(res[1][0])
-                    setSchedule(JSON.parse(res[1][0].time))
+                console.log(res);
+                if (res.check == false) {
+                    window.location.replace('/')
+                } else {
+                    // console.log(res[0][0]);
+                    // console.log(res[0][0].description);
+                    setCourse(res[0][0]);
+                    setParse(JSON.parse(res[0][0].description))
+                    // console.log(res[1][0]);
+                    if (res[1][0]) {
+                        setSchedule_id(res[1][0].schedule_id);
+                        setTeacher(res[1][0])
+                        setSchedule(JSON.parse(res[1][0].time))
+                    }
                 }
+
             });
     }, []);
 
@@ -115,9 +120,9 @@ function Course() {
     return (
         <div>
             {loading == true &&
-            <div className='text-center position-fixed w-100' style={{zIndex:'100'}}>
-                <img className='' style={{height:'50vh', marginTop:'25vh'}} src="https://img.pikbest.com/png-images/20190918/cartoon-snail-loading-loading-gif-animation_2734139.png!sw800" alt="" />
-            </div>
+                <div className='text-center position-fixed w-100' style={{ zIndex: '100' }}>
+                    <img className='' style={{ height: '50vh', marginTop: '25vh' }} src="https://img.pikbest.com/png-images/20190918/cartoon-snail-loading-loading-gif-animation_2734139.png!sw800" alt="" />
+                </div>
             }
             <div style={{ position: 'sticky', top: '0', zIndex: '100' }}><Navbar></Navbar></div>
             <div className="container" style={{ maxWidth: '1200px' }}>

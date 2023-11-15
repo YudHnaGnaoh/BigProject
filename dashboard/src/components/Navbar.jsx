@@ -193,19 +193,19 @@ function Navbar() {
     }, [userS])
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/education`)
+        fetch(`http://127.0.0.1:8000/api/education2`)
             .then((res) => res.json())
             .then((res) => {
                 // console.log(res);
                 setEdu(res);
             });
-        fetch(`http://127.0.0.1:8000/api/allCategory`)
+        fetch(`http://127.0.0.1:8000/api/allCategory2`)
             .then((res) => res.json())
             .then((res) => {
                 // console.log(res);
                 setCate(res);
             });
-        fetch(`http://127.0.0.1:8000/api/allCourse`)
+        fetch(`http://127.0.0.1:8000/api/allCourse2`)
             .then((res) => res.json())
             .then((res) => {
                 // console.log(res);
