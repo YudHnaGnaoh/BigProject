@@ -15,7 +15,7 @@ function ScheduleStudent() {
     if (!localStorage.getItem('email')) {
       window.location.replace('/')
     } else {
-      fetch(`http://127.0.0.1:8000/api/studentSchedule?email=${localStorage.getItem('email')}`)
+      fetch(`https://duyanh.codingfs.com/api/studentSchedule?email=${localStorage.getItem('email')}`)
         .then((res) => res.json())
         .then((res) => {
           console.log(res);

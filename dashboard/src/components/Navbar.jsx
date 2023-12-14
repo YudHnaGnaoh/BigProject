@@ -43,7 +43,7 @@ function Navbar() {
                 title: 'Email không phù hợp',
             });
         } else {
-            axios.post(`http://127.0.0.1:8000/api/loginTeacher?email=${inputEmail}`)
+            axios.post(`https://duyanh.codingfs.com/api/loginTeacher?email=${inputEmail}`)
                 .then((res) => {
                     if (res.data.check == false) {
                         if (res.data.msg.email) {
@@ -79,7 +79,7 @@ function Navbar() {
                 title: 'Email không phù hợp',
             });
         } else {
-            axios.post(`http://127.0.0.1:8000/api/loginStudent?email=${inputEmail}`)
+            axios.post(`https://duyanh.codingfs.com/api/loginStudent?email=${inputEmail}`)
                 .then((res) => {
                     if (res.data.check == false) {
                         if (res.data.msg.email) {
@@ -115,7 +115,7 @@ function Navbar() {
         localStorage.removeItem('email')
         localStorage.removeItem('role')
         localStorage.removeItem('name')
-        // axios.post(`http://127.0.0.1:8000/api/logout`)
+        // axios.post(`https://duyanh.codingfs.com/api/logout`)
         //     .then((res) => {
         //         console.log(res);
         //     })
@@ -128,7 +128,7 @@ function Navbar() {
         if (userT && userT.length != 0) {
             axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userT.access_token}`, {})
                 .then((res) => {
-                    axios.post(`http://127.0.0.1:8000/api/loginTeacher?email=${res.data.email}`)
+                    axios.post(`https://duyanh.codingfs.com/api/loginTeacher?email=${res.data.email}`)
                         .then((res) => {
                             if (res.data.check == false) {
                                 if (res.data.msg.email) {
@@ -149,7 +149,7 @@ function Navbar() {
                                 handleClose()
                             }
                         })
-                    // axios.post(`http://127.0.0.1:8000/api/login?email=${res.data.email}`)
+                    // axios.post(`https://duyanh.codingfs.com/api/login?email=${res.data.email}`)
                     //     .then((res) => {
                     //         console.log(res);
                     //     })
@@ -162,7 +162,7 @@ function Navbar() {
         if (userS && userS.length != 0) {
             axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userS.access_token}`, {})
                 .then((res) => {
-                    axios.post(`http://127.0.0.1:8000/api/loginStudent?email=${res.data.email}`)
+                    axios.post(`https://duyanh.codingfs.com/api/loginStudent?email=${res.data.email}`)
                         .then((res) => {
                             if (res.data.check == false) {
                                 if (res.data.msg.email) {
@@ -183,7 +183,7 @@ function Navbar() {
                                 handleClose()
                             }
                         })
-                    // axios.post(`http://127.0.0.1:8000/api/login?email=${res.data.email}`)
+                    // axios.post(`https://duyanh.codingfs.com/api/login?email=${res.data.email}`)
                     //     .then((res) => {
                     //         console.log(res);
                     //     })
@@ -193,19 +193,19 @@ function Navbar() {
     }, [userS])
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/education2`)
+        fetch(`https://duyanh.codingfs.com/api/education2`)
             .then((res) => res.json())
             .then((res) => {
                 // console.log(res);
                 setEdu(res);
             });
-        fetch(`http://127.0.0.1:8000/api/allCategory2`)
+        fetch(`https://duyanh.codingfs.com/api/allCategory2`)
             .then((res) => res.json())
             .then((res) => {
                 // console.log(res);
                 setCate(res);
             });
-        fetch(`http://127.0.0.1:8000/api/allCourse2`)
+        fetch(`https://duyanh.codingfs.com/api/allCourse2`)
             .then((res) => res.json())
             .then((res) => {
                 // console.log(res);
@@ -310,14 +310,14 @@ function Navbar() {
                                     )}
                                 </ul>
                             </li>
-                            <li className="nav-item dropdown">
+                            {/*<li className="nav-item dropdown">
                                 <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Giáo viên
                                 </a>
-                                <ul className="dropdown-menu dropdown-content" aria-labelledby="navbarDropdownMenuLink">
+                               <ul className="dropdown-menu dropdown-content" aria-labelledby="navbarDropdownMenuLink">
                                     <li><a className="dropdown-item" href="#">Action</a></li>
                                     <li><a className="dropdown-item" href="#">Another action</a></li>
-                                    <li><a className="dropdown-item" href="#">Something else here</a></li>
+                                    <li><a className="dropdown-item" href="#">Something else here</a></li> 
                                 </ul>
                             </li>
                             <li className="nav-item dropdown">
@@ -327,8 +327,14 @@ function Navbar() {
                                 <ul className="dropdown-menu dropdown-content" aria-labelledby="navbarDropdownMenuLink">
                                     <li><a className="dropdown-item" href="#">Action</a></li>
                                     <li><a className="dropdown-item" href="#">Another action</a></li>
-                                    <li><a className="dropdown-item" href="#">Something else here</a></li>
+                                    <li><a className="dropdown-item" href="#">Something else here</a></li> 
                                 </ul>
+                            </li>*/}
+                            <li className="nav-item">
+                                <a className="nav-link" href="#">Giáo viên</a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link" href="#">Ngân hàng đề thi</a>
                             </li>
                             <li className="nav-item">
                                 <a className="nav-link" href="#">Hỏi đáp AI</a>
@@ -347,7 +353,9 @@ function Navbar() {
                         <div className='d-flex ms-auto'>
                             {localStorage.getItem('email') && localStorage.getItem('email') != '' && localStorage.getItem('email') != null ?
                                 <div className='d-flex'>
-                                    <button className='btn btn-outline-success me-2' style={{ fontWeight: '600' }}>Góc học tập</button>
+                                    {localStorage.getItem('role') != 6 && localStorage.getItem('role') != 32 &&
+                                        <a href="/ScheduleStudent" className='btn btn-outline-success me-2' style={{ fontWeight: '600' }}>Góc học tập</a>
+                                    }
                                     <img className="img-fluid nav-link dropdown-toggle rounded-circle" role="button" data-bs-toggle="dropdown" aria-expanded="false" src="https://marathon.edu.vn/_next/image?url=%2Fimages%2Favatar.png&w=1920&q=75" style={{ height: '40px' }} alt="Avatar" />
                                     <ul className="dropdown-menu bubble" style={{ right: '0', left: 'unset' }} aria-labelledby="navbarDropdownMenuLink">
                                         <li><span className="dropdown-item" href="#">Xin chào!</span></li>
@@ -358,9 +366,9 @@ function Navbar() {
                                         {localStorage.getItem('role') == 32 &&
                                             <li><a className="dropdown-item" style={{ color: 'orange', fontSize: '16px', fontWeight: '600' }} href="/ScheduleTeacher">Lịch lớp của giáo viên</a></li>
                                         }
-                                        {localStorage.getItem('role') != 6 && localStorage.getItem('role') != 32 &&
+                                        {/* {localStorage.getItem('role') != 6 && localStorage.getItem('role') != 32 &&
                                             <li><a className="dropdown-item" style={{ color: 'blue', fontSize: '16px', fontWeight: '600' }} href="/ScheduleStudent">Lịch học của học sinh</a></li>
-                                        }
+                                        } */}
                                         <hr />
                                         <li><a className="dropdown-item" href="#" onClick={() => Logout()}>Đăng xuất</a></li>
                                     </ul>

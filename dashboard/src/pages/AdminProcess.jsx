@@ -42,7 +42,7 @@ function AdminProcess() {
     if (!localStorage.getItem('email') || localStorage.getItem('role') != 6) {
       window.location.replace('/')
     } else {
-      fetch(`http://127.0.0.1:8000/api/getProcess?page=${page}`)
+      fetch(`https://duyanh.codingfs.com/api/getProcess?page=${page}`)
         .then((res) => res.json())
         .then((res) => {
           // console.log(res);
@@ -50,7 +50,7 @@ function AdminProcess() {
           setPerPage(res.per_page)
           setLastPage(res.last_page)
         });
-      fetch(`http://127.0.0.1:8000/api/allStudents2`)
+      fetch(`https://duyanh.codingfs.com/api/allStudents2`)
         .then((res) => res.json())
         .then((res) => {
           // console.log(res);
@@ -60,7 +60,7 @@ function AdminProcess() {
   }, []);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/api/getProcess?page=${page}`)
+    fetch(`https://duyanh.codingfs.com/api/getProcess?page=${page}`)
       .then((res) => res.json())
       .then((res) => {
         setInfo(res.data);
@@ -69,7 +69,7 @@ function AdminProcess() {
 
   const getStudent = (i) => {
     // console.log(i);
-    fetch(`http://127.0.0.1:8000/api/getStudents?id=${i}`)
+    fetch(`https://duyanh.codingfs.com/api/getStudents?id=${i}`)
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
@@ -89,7 +89,7 @@ function AdminProcess() {
         title: 'Không thay đổi gi'
       })
     } else {
-      axios.post(`http://127.0.0.1:8000/api/editPass?page=${page}`, {
+      axios.post(`https://duyanh.codingfs.com/api/editPass?page=${page}`, {
         id: id,
         pass: newPass,
       })
@@ -106,7 +106,7 @@ function AdminProcess() {
 
   const addStudent = (() => {
     // console.log(id, student_id);
-    axios.post(`http://127.0.0.1:8000/api/addStudent`, {
+    axios.post(`https://duyanh.codingfs.com/api/addStudent`, {
       process_id: id,
       student_id: student_id,
     })
@@ -135,7 +135,7 @@ function AdminProcess() {
             icon: 'success',
             title: 'Đã xóa học sinh'
           })
-          fetch(`http://127.0.0.1:8000/api/getProcess`)
+          fetch(`https://duyanh.codingfs.com/api/getProcess`)
             .then((res) => res.json())
             .then((res) => {
               setInfo(res.data);
@@ -156,7 +156,7 @@ function AdminProcess() {
       confirmButtonText: "Xóa học sinh!"
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.post(`http://127.0.0.1:8000/api/removeStudent`, {
+        axios.post(`https://duyanh.codingfs.com/api/removeStudent`, {
           process_id: id,
           student_id: i,
         })
@@ -185,7 +185,7 @@ function AdminProcess() {
                 title: 'Đã xóa học sinh'
               })
               setStudentList(res.data)
-              fetch(`http://127.0.0.1:8000/api/getProcess?page=${page}`)
+              fetch(`https://duyanh.codingfs.com/api/getProcess?page=${page}`)
                 .then((res) => res.json())
                 .then((res) => {
                   setInfo(res.data);
@@ -208,7 +208,7 @@ function AdminProcess() {
       confirmButtonText: "Xóa lớp!"
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.post(`http://127.0.0.1:8000/api/removeClass?page=${page}`, {
+        axios.post(`https://duyanh.codingfs.com/api/removeClass?page=${page}`, {
           id: i,
         })
           .then((res) => {
@@ -231,7 +231,7 @@ function AdminProcess() {
                 title: 'Đã xóa lớp'
               })
               setInfo(res.data.data)
-              // fetch(`http://127.0.0.1:8000/api/getProcess?page=${page}`)
+              // fetch(`https://duyanh.codingfs.com/api/getProcess?page=${page}`)
               //   .then((res) => res.json())
               //   .then((res) => {
               //     setInfo(res.data);

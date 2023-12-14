@@ -33,7 +33,7 @@ function Course() {
     const id = useParams()
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/singleCourse?id=${id.id}`)
+        fetch(`https://duyanh.codingfs.com/api/singleCourse?id=${id.id}`)
             .then((res) => res.json())
             .then((res) => {
                 console.log(res);
@@ -67,7 +67,7 @@ function Course() {
             })
         } else {
             setLoading(true)
-            axios.post(`http://127.0.0.1:8000/api/sendMail`, {
+            axios.post(`https://duyanh.codingfs.com/api/sendMail`, {
                 email: localStorage.getItem('email'),
                 teacher: teacher.name,
                 time: time,

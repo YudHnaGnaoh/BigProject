@@ -13,7 +13,7 @@ function Grade() {
     // console.log(course);
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/sameGradeCourse?grade=${grade.grade}`)
+        fetch(`https://duyanh.codingfs.com/api/sameGradeCourse?grade=${grade.grade}`)
             .then((res) => res.json())
             .then((res) => {
                 // console.log(res);
@@ -34,7 +34,7 @@ function Grade() {
                     {course && course.map((item, index) =>
                         <div key={index} className="col-md">
                             <div className='pb-3 mb-5 mx-auto text-center pointer' style={{ backgroundColor: 'rgb(240,247,255)', borderRadius: '30px', overflow: 'hidden', minHeight: '400px', width: '350px' }} onClick={() => goToCourse(item.id)}>
-                                <img src={"http://127.0.0.1:8000/images/" + item.image} style={{ width: '100%' }} alt="" />
+                                <img src={"https://duyanh.codingfs.com/images/" + item.image} style={{ width: '100%' }} alt="" />
                                 <div className="p-3">
                                     <div className='py-1 mb-2 mx-auto' style={{ borderRadius: '30px', backgroundColor: 'white', width: 'fit-content' }}><span className='p-3'>Bộ giáo dục</span></div>
                                     <h4 className="fw-bold">{item.name}</h4>

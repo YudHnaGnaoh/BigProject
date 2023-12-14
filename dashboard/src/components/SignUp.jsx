@@ -25,7 +25,7 @@ function SIgnUp() {
     const [course, setCourse] = useState('')
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/allCategory`)
+        fetch(`https://duyanh.codingfs.com/api/allCategory`)
             .then((res) => res.json())
             .then((res) => {
                 // console.log(res);
@@ -34,12 +34,20 @@ function SIgnUp() {
     }, [])
 
     const sendInfo = () => {
-        console.log(name, email, phone, course);
-        if (name == '' || email == '' || course == '') {
-
+        // console.log(name, email, phone, course);
+        if (name == '' || email == '' || course == '' || phone == '') {
+            Toast.fire({
+                icon: "error",
+                title: "Thiếu thông tin",
+            });
+        } else if (!phone.match(/(84|0[3|5|7|8|9])+([0-9]{8})\b/g)) {
+            Toast.fire({
+                icon: "error",
+                title: "Sai fomat điện thoại",
+            });
         } else {
             setLoading(true)
-            axios.post(`http://127.0.0.1:8000/api/signUp`, {
+            axios.post(`https://duyanh.codingfs.com/api/signUp`, {
                 name: name,
                 phone: phone,
                 email: email,
@@ -75,6 +83,10 @@ function SIgnUp() {
                             icon: "success",
                             title: "Vui lòng kiểm tra email của bạn",
                         });
+                        setName('');
+                        setPhone('');
+                        setEmail('');
+                        setCourse('')
                     }
 
                     // setUserName(res.data.name)
@@ -92,7 +104,7 @@ function SIgnUp() {
                 </div>
                 <div className="col-md p-3 rounded-4" style={{ backgroundColor: 'rgb(240,247,255)' }}>
                     {loading == true &&
-                        <div className='text-center position-fixed w-100' style={{ zIndex: '100', top:'0', left:'0' }}>
+                        <div className='text-center position-fixed w-100' style={{ zIndex: '100', top: '0', left: '0' }}>
                             <img className='' style={{ height: '50vh', marginTop: '25vh' }} src="https://img.pikbest.com/png-images/20190918/cartoon-snail-loading-loading-gif-animation_2734139.png!sw800" alt="" />
                         </div>
                     }
@@ -101,11 +113,11 @@ function SIgnUp() {
                             <h1 className='' style={{ color: 'rgb(7,55,92)', fontWeight: '600' }}>Đăng Ký <span style={{ color: 'rgb(33,155,103)' }}>Học Thử</span></h1>
                         </div>
                         <div className="">
-                            <input className='form-control fw-bold my-3' style={{ height: '60px' }} type="text" placeholder='Họ tên *' onChange={(e) => setName(e.target.value)} />
-                            <input className='form-control fw-bold my-3' style={{ height: '60px' }} type="number" placeholder='Số điện thoại' onChange={(e) => setPhone(e.target.value)} />
-                            <input className='form-control fw-bold my-3' style={{ height: '60px' }} type="email" placeholder='Địa chỉ email *' onChange={(e) => setEmail(e.target.value)} />
-                            <select className='form-control fw-bold my-3' style={{ height: '60px' }} name='' placeholder="Môn học quan tâm *" id="" onChange={(e) => setCourse(e.target.value)}>
-                                <option value='' hidden>Môn học quan tâm</option>
+                            <input className='form-control fw-bold my-3' style={{ height: '60px' }} type="text" placeholder='Họ tên *' onChange={(e) => setName(e.target.value)} value={name} />
+                            <input className='form-control fw-bold my-3' style={{ height: '60px' }} type="number" placeholder='Số điện thoại *' onChange={(e) => setPhone(e.target.value)} value={phone} />
+                            <input className='form-control fw-bold my-3' style={{ height: '60px' }} type="email" placeholder='Địa chỉ email *' onChange={(e) => setEmail(e.target.value)} value={email} />
+                            <select className='form-control fw-bold my-3' style={{ height: '60px' }} name='' placeholder="Môn học quan tâm *" id="" onChange={(e) => setCourse(e.target.value)} value={course}>
+                                <option value='' hidden>Môn học quan tâm *</option>
                                 {cate && cate.map((item, index) =>
                                     < option key={index} value={item.name}>{item.name}</option>
                                 )}

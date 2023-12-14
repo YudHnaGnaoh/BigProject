@@ -32,7 +32,10 @@ function AdminCourse() {
   // ==================== Edit course =============================
   const [course, setCourse] = useState([])
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
+  const handleClose = (() => {
+    setShow(false);
+    setModuleList([{ moduleName: '', moduleDetail: '' }]);
+  });
   const handleShow = () => setShow(true);
   const [courseId, setCourseId] = useState('');
   const [courseName, setCourseName] = useState('');
@@ -112,7 +115,7 @@ function AdminCourse() {
     if (!localStorage.getItem('email') || localStorage.getItem('role') != 6) {
       window.location.replace('/')
     } else {
-      fetch(`http://127.0.0.1:8000/api/course?cate_id=${cate_id.id}`)
+      fetch(`https://duyanh.codingfs.com/api/course?cate_id=${cate_id.id}`)
         .then((res) => res.json())
         .then((res) => {
           // console.log(res);
@@ -166,7 +169,7 @@ function AdminCourse() {
       formData.append('description', description);
       formData.append('cate_id', cate_id.id);
 
-      axios.post('http://127.0.0.1:8000/api/createCourse',
+      axios.post('https://duyanh.codingfs.com/api/createCourse',
         formData,
         { headers: { 'content-Type': 'multipart/form-data' } })
         .then((res) => {
@@ -222,11 +225,11 @@ function AdminCourse() {
           }
           else {
             // console.log(res.data);
-            setCourse(res.data);
+            // setCourse(res.data);
             Toast.fire({
               icon: 'success',
               title: 'Đã thêm lớp'
-            })
+            }).then(window.location.reload())
           }
         })
     }
@@ -235,9 +238,9 @@ function AdminCourse() {
 
   const editCourse = (() => {
     const description = JSON.stringify(moduleList)
-    console.log(courseId, courseName, coursePrice, courseDiscount, courseDuration, courseGrade, courseSummary);
-    console.log(file);
-    console.log(description);
+    // console.log(courseId, courseName, coursePrice, courseDiscount, courseDuration, courseGrade, courseSummary);
+    // console.log(file);
+    // console.log(description);
     if (courseId == '' || courseName == '' || coursePrice == '' || courseDiscount == '' ||
       courseDuration == '' || courseGrade == '' || courseSummary == '' ||
       description == '') {
@@ -274,7 +277,7 @@ function AdminCourse() {
       formData.append('description', description);
       formData.append('cate_id', cate_id.id);
 
-      axios.post('http://127.0.0.1:8000/api/editCourse',
+      axios.post('https://duyanh.codingfs.com/api/editCourse',
         formData,
         { headers: { 'content-Type': 'multipart/form-data' } })
         .then((res) => {
@@ -340,6 +343,7 @@ function AdminCourse() {
               icon: 'success',
               title: 'Sửa thành công'
             })
+            handleClose()
           }
         })
     }
@@ -349,7 +353,7 @@ function AdminCourse() {
   const switchCourse = (id) => {
     // console.log(id);
     axios
-      .post('http://127.0.0.1:8000/api/switchCourse', {
+      .post('https://duyanh.codingfs.com/api/switchCourse', {
         id: id,
         cate_id: cate_id.id,
       })
@@ -371,7 +375,7 @@ function AdminCourse() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post('http://127.0.0.1:8000/api/deleteCourse', {
+          .post('https://duyanh.codingfs.com/api/deleteCourse', {
             id: id,
             cate_id: cate_id.id,
           })
@@ -423,8 +427,8 @@ function AdminCourse() {
                 <input className='form-control' type="text" defaultValue={courseName} onChange={(e) => setCourseName(e.target.value)} />
               </div>
               <div className="col-md">
-                <h5 style={{ color: 'red' }}>Thời lượng</h5>
-                <input className='form-control' type="text" defaultValue={courseDuration} onChange={(e) => setCourseDuration(e.target.value)} />
+                <h5 style={{ color: 'red' }}>Thời lượng (buổi)</h5>
+                <input className='form-control' type="number" defaultValue={courseDuration} onChange={(e) => setCourseDuration(e.target.value)} />
               </div>
             </div>
             <div className="row mb-3">
@@ -454,7 +458,7 @@ function AdminCourse() {
                 {showImg ?
                   <img src={showImg} style={{ height: '120px' }} alt="" />
                   :
-                  <img src={"http://127.0.0.1:8000/images/" + courseImg} style={{ height: '120px' }} alt="" />
+                  <img src={"https://duyanh.codingfs.com/images/" + courseImg} style={{ height: '120px' }} alt="" />
                 }
               </div>
             </div>
@@ -514,7 +518,7 @@ function AdminCourse() {
                   {course && course.map((item, index) =>
                     < tr key={index}>
                       <td align="center">
-                        <img src={"http://127.0.0.1:8000/images/" + (item.image)} style={{ height: '120px' }} alt="" />
+                        <img src={"https://duyanh.codingfs.com/images/" + (item.image)} style={{ height: '120px' }} alt="" />
                       </td>
                       <td>
                         <span className='pointer fw-bold' onClick={() => detail(item.id)}>{item.name}</span>
@@ -554,8 +558,8 @@ function AdminCourse() {
                 <input className='form-control' type="text" onChange={(e) => setCreateCourseName(e.target.value)} />
               </div>
               <div className="col-md">
-                <h5 style={{ color: 'red' }}>Thời lượng</h5>
-                <input className='form-control' type="text" onChange={(e) => setCreateCourseDuration(e.target.value)} />
+                <h5 style={{ color: 'red' }}>Thời lượng (buổi)</h5>
+                <input className='form-control' type="number" onChange={(e) => setCreateCourseDuration(e.target.value)} />
               </div>
             </div>
             <div className="row mb-3">
@@ -569,7 +573,8 @@ function AdminCourse() {
               </div>
               <div className="col-md">
                 <h5 style={{ color: 'red' }}>Khối lớp</h5>
-                <select className='form-select' name="" id="" defaultValue={'Lớp 1'} onChange={(e) => setCreateCourseGrade(e.target.value)}>
+                <select className='form-select' name="" id="" defaultValue='' onChange={(e) => setCreateCourseGrade(e.target.value)}>
+                  <option hidden value=''>Chọn lớp</option>
                   <option value="Lớp 1">Lớp 1</option>
                   <option value="Lớp 2">Lớp 2</option>
                   <option value="Lớp 3">Lớp 3</option>

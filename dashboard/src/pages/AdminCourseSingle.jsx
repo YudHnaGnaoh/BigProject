@@ -17,14 +17,14 @@ import { FileUploader } from "react-drag-drop-files";
 function AdminCourseSingle() {
 
     const [singleCourse, setSingleCourse] = useState([])
-    console.log(singleCourse);
+    // console.log(singleCourse);
     const id = useParams()
 
     useEffect(() => {
         if (!localStorage.getItem('email') || localStorage.getItem('role') != 6) {
             window.location.replace('/')
         } else {
-            fetch(`http://127.0.0.1:8000/api/singleCourse?id=${id.id}`)
+            fetch(`https://duyanh.codingfs.com/api/singleCourse?id=${id.id}`)
                 .then((res) => res.json())
                 .then((res) => {
                     console.log(res[0][0]);
@@ -36,14 +36,14 @@ function AdminCourseSingle() {
     }, []);
 
     // ==================== Drag & Drop =============================
-    const fileTypes = ["JPG", "PNG", "GIF", "WEBP", "APNG", "AVIF", "SVG", 'jpg', 'png', 'gif', "WebP", 'webp', 'svg', 'apng', 'avif'];
-    const [file, setFile] = useState(null);
-    const [showImg, setShowImg] = useState(null);
-    const uploadFile = (file) => {
-        setFile(file);
-        var url = URL.createObjectURL(file);
-        setShowImg(url)
-    };
+    // const fileTypes = ["JPG", "PNG", "GIF", "WEBP", "APNG", "AVIF", "SVG", 'jpg', 'png', 'gif', "WebP", 'webp', 'svg', 'apng', 'avif'];
+    // const [file, setFile] = useState(null);
+    // const [showImg, setShowImg] = useState(null);
+    // const uploadFile = (file) => {
+    //     setFile(file);
+    //     var url = URL.createObjectURL(file);
+    //     setShowImg(url)
+    // };
     // ==================== Module =============================
     const [parseModule, setParseModule] = useState('');
 
@@ -67,7 +67,7 @@ function AdminCourseSingle() {
                                                     <span className='fw-bold text-danger' >Ảnh</span>
                                                 </td>
                                                 <td>
-                                                    <img src={"http://127.0.0.1:8000/images/" + (item.image)} style={{ height: '120px' }} alt="" />
+                                                    <img src={"https://duyanh.codingfs.com/images/" + (item.image)} style={{ height: '120px' }} alt="" />
                                                 </td>
                                             </tr>
                                             <tr className='align-middle'>
@@ -159,7 +159,7 @@ function AdminCourseSingle() {
                                                     {showImg ?
                                                         <img src={showImg} style={{ height: '120px' }} alt="" />
                                                         :
-                                                        <img src={"http://127.0.0.1:8000/images/" + item.image} style={{ height: '120px' }} alt="" />
+                                                        <img src={"https://duyanh.codingfs.com/images/" + item.image} style={{ height: '120px' }} alt="" />
                                                     }
                                                 </td>
                                             </tr>

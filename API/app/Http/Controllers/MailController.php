@@ -168,10 +168,12 @@ class MailController extends Controller
     {
         $Validator = Validator::make($request->all(), [
             'name' => 'required',
+            'phone' => 'required',
             'email' => 'required|email',
             'category' => 'required',
         ], [
             'name.required' => 'Missing name',
+            'phone.required' => 'Missing phone',
             'email.required' => 'Missing email',
             'email.email' => 'Needs to be an email',
             'category.required' => 'Missing category',

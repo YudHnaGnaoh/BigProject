@@ -46,6 +46,15 @@ class CourseController extends Controller
 
     public function sameGradeCourse(Request $request, Courses $Courses)
     {
+        $Validator = Validator::make($request->all(), [
+            'grade' => 'required|exists:courses_tbl,grade',
+        ], [
+            'grade.required' => 'Need grade',
+            'grade.exists' => "Grade doesn't exist",
+        ]);
+        if ($Validator->fails()) {
+            return response()->json(['check' => false, 'msg' => $Validator->errors()]);
+        }
         $Courses = Courses::where('grade', $request->grade)
             ->where('status', 1)->get();
         return response()->json($Courses);
@@ -85,7 +94,7 @@ class CourseController extends Controller
     {
         $Validator = Validator::make($request->all(), [
             'name' => 'required',
-            'duration' => 'required',
+            'duration' => 'required|numeric',
             'price' => 'required|numeric|min:0',
             'discount' => 'required|numeric|min:0|max:100',
             'grade' => 'required',
@@ -169,7 +178,7 @@ class CourseController extends Controller
         $Validator = Validator::make($request->all(), [
             'id' => 'required|exists:courses_tbl,id',
             'name' => 'required',
-            'duration' => 'required',
+            'duration' => 'required|numeric',
             'price' => 'required|numeric|min:0',
             'discount' => 'required|numeric|min:0|max:100',
             'grade' => 'required',

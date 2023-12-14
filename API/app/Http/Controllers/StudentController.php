@@ -46,7 +46,7 @@ class StudentController extends Controller
 
     public function allStudents2(Request $request, Student $student)
     {
-        return response()->json(Student::orderBy('email')->all());
+        return response()->json(Student::orderBy('email')->get());
     }
 
     public function createStudent(Request $request, Student $student)

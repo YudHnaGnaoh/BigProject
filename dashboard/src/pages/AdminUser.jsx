@@ -53,13 +53,13 @@ function AdminUser() {
     if (!localStorage.getItem('email') || localStorage.getItem('role') != 6) {
       window.location.replace('/')
     } else {
-      fetch(`http://127.0.0.1:8000/api/role`)
+      fetch(`https://duyanh.codingfs.com/api/role`)
         .then((res) => res.json())
         .then((res) => {
           // console.log(res);
           setUserRole(res);
         });
-      fetch(`http://127.0.0.1:8000/api/user?page=${page}`)
+      fetch(`https://duyanh.codingfs.com/api/user?page=${page}`)
         .then((res) => res.json())
         .then((res) => {
           // console.log(res);
@@ -71,7 +71,7 @@ function AdminUser() {
   }, []);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/api/user?page=${page}`)
+    fetch(`https://duyanh.codingfs.com/api/user?page=${page}`)
       .then((res) => res.json())
       .then((res) => {
         setUser(res.data);
@@ -98,7 +98,7 @@ function AdminUser() {
       });
     } else {
       axios
-        .post("http://127.0.0.1:8000/api/createRole", {
+        .post("https://duyanh.codingfs.com/api/createRole", {
           name: newRole,
         })
         .then((res) => {
@@ -116,7 +116,12 @@ function AdminUser() {
             }
           } else {
             // console.log(res.data);
+            Toast.fire({
+              icon: "success",
+              title: "Dã thêm loại tài khoán",
+            });
             setUserRole(res.data);
+            setNewRole('')
           }
         });
     }
@@ -140,7 +145,7 @@ function AdminUser() {
       });
     } else {
       axios
-        .post("http://127.0.0.1:8000/api/editRole", {
+        .post("https://duyanh.codingfs.com/api/editRole", {
           id: roleId,
           name: newRoleName,
         })
@@ -180,7 +185,7 @@ function AdminUser() {
   const switchRole = (id) => {
     // console.log(id);
     axios
-      .post("http://127.0.0.1:8000/api/switchRole", {
+      .post("https://duyanh.codingfs.com/api/switchRole", {
         id: id,
       })
       .then((res) => {
@@ -201,7 +206,7 @@ function AdminUser() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post("http://127.0.0.1:8000/api/deleteRole", {
+          .post("https://duyanh.codingfs.com/api/deleteRole", {
             id: id,
           })
           .then((res) => {
@@ -252,7 +257,7 @@ function AdminUser() {
       });
     } else {
       axios
-        .post(`http://127.0.0.1:8000/api/createUser?page=${page}`, {
+        .post(`https://duyanh.codingfs.com/api/createUser?page=${page}`, {
           name: newUser,
           email: newUserEmail,
           role_id: newRole_id,
@@ -282,8 +287,15 @@ function AdminUser() {
             }
           } else {
             // console.log(res.data);
+            Toast.fire({
+              icon: "success",
+              title: "Dã thêm người dùng",
+            });
             setUser(res.data.data);
-            setLastPage(res.data.last_page)
+            setLastPage(res.data.last_page);
+            setNewUser('');
+            setNewUserEmail('');
+            setNewRole_id('');
           }
         });
     }
@@ -312,7 +324,7 @@ function AdminUser() {
       });
     } else {
       axios
-        .post(`http://127.0.0.1:8000/api/editUser?page=${page}`, {
+        .post(`https://duyanh.codingfs.com/api/editUser?page=${page}`, {
           id: userId,
           name: newUserName,
           role_id: newUserRoleId
@@ -361,7 +373,7 @@ function AdminUser() {
   const switchUser = (id) => {
     // console.log(id);
     axios
-      .post(`http://127.0.0.1:8000/api/switchUser?page=${page}`, {
+      .post(`https://duyanh.codingfs.com/api/switchUser?page=${page}`, {
         id: id,
       })
       .then((res) => {
@@ -382,7 +394,7 @@ function AdminUser() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post(`http://127.0.0.1:8000/api/deleteUser?page=${page}`, {
+          .post(`https://duyanh.codingfs.com/api/deleteUser?page=${page}`, {
             id: id,
           })
           .then((res) => {
@@ -543,7 +555,7 @@ function AdminUser() {
                     <tr>
                       <td colSpan={2}>
                         <input className="form-control" type="text" placeholder="Add new role"
-                          onChange={(e) => setNewRole(e.target.value)} />
+                          onChange={(e) => setNewRole(e.target.value)} value={newRole} />
                       </td>
                       <td colSpan={2}>
                         <button className="btn btn-success w-100"
@@ -634,6 +646,7 @@ function AdminUser() {
                           type="text"
                           placeholder="Tên"
                           onChange={(e) => setNewUser(e.target.value)}
+                          value={newUser}
                         />
                       </td>
                       <td>
@@ -642,12 +655,14 @@ function AdminUser() {
                           type="email"
                           placeholder="Email"
                           onChange={(e) => setNewUserEmail(e.target.value)}
+                          value={newUserEmail}
                         />
                       </td>
                       <td>
                         <select
                           className="form-select"
                           onChange={(e) => setNewRole_id(e.target.value)}
+                          value={newRole_id}
                           name=""
                           id=""
                         >

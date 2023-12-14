@@ -9,7 +9,7 @@ function Home() {
   const [course, setCourse] = useState()
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/api/homePageCourse`)
+    fetch(`https://duyanh.codingfs.com/api/homePageCourse`)
       .then((res) => res.json())
       .then((res) => {
         // console.log(res);
@@ -30,7 +30,7 @@ function Home() {
           {course && course.map((item, index) =>
             <div key={index} role='button' className="col" onClick={() => goToCourse(item.id)}>
               <div className='pb-3 mx-auto text-center' style={{ backgroundColor: 'rgb(240,247,255)', borderRadius: '30px', overflow: 'hidden' }}>
-                <img src={"http://127.0.0.1:8000/images/" + item.image} className='img-fluid' alt="" />
+                <img src={"https://duyanh.codingfs.com/images/" + item.image} className='img-fluid' alt="" />
                 <div className="p-3">
                   <div className='py-1 mb-2 mx-auto' style={{ borderRadius: '30px', backgroundColor: 'white', width: 'fit-content' }}><span className='p-3'>Bộ giáo dục</span></div>
                   <div className='title-course'>

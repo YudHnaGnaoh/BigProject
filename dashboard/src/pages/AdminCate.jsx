@@ -42,7 +42,7 @@ function AdminCate() {
     if (!localStorage.getItem('email') || localStorage.getItem('role') != 6) {
       window.location.replace('/')
     } else {
-      fetch(`http://127.0.0.1:8000/api/category?education_id=${education_id.id}`)
+      fetch(`https://duyanh.codingfs.com/api/category?education_id=${education_id.id}`)
         .then((res) => res.json())
         .then((res) => {
           // console.log(res);
@@ -59,7 +59,7 @@ function AdminCate() {
       })
     }
     else {
-      axios.post('http://127.0.0.1:8000/api/createCategory', {
+      axios.post('https://duyanh.codingfs.com/api/createCategory', {
         name: newCate,
         education_id: education_id.id,
       })
@@ -89,6 +89,7 @@ function AdminCate() {
               icon: 'success',
               title: 'Thêm chương trình'
             })
+            setNewCate('')
           }
         })
     }
@@ -115,7 +116,7 @@ function AdminCate() {
       })
     }
     else {
-      axios.post('http://127.0.0.1:8000/api/editCategory', {
+      axios.post('https://duyanh.codingfs.com/api/editCategory', {
         id: cateId,
         name: newCateName,
         education_id: education_id.id,
@@ -155,7 +156,7 @@ function AdminCate() {
   const switchCate = (id) => {
     // console.log(id);
     axios
-      .post('http://127.0.0.1:8000/api/switchCategory', {
+      .post('https://duyanh.codingfs.com/api/switchCategory', {
         id: id,
         education_id: education_id.id,
       })
@@ -177,7 +178,7 @@ function AdminCate() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post('http://127.0.0.1:8000/api/deleteCategory', {
+          .post('https://duyanh.codingfs.com/api/deleteCategory', {
             id: id,
             education_id: education_id.id,
           })
@@ -274,7 +275,7 @@ function AdminCate() {
                   </tr>
                 )}
                 <tr>
-                  <td colSpan={2}><input className='form-control' type="text" placeholder='Thêm chương trình' onChange={(e) => setNewCate(e.target.value)} /></td>
+                  <td colSpan={2}><input className='form-control' type="text" placeholder='Thêm chương trình' onChange={(e) => setNewCate(e.target.value)} value={newCate} /></td>
                   <td colSpan={2}><button className='btn btn-success w-100' onClick={() => addCate()}>Thêm</button></td>
                 </tr>
               </tbody>

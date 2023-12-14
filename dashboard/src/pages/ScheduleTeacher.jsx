@@ -27,7 +27,7 @@ function ScheduleTeacher() {
         if (!localStorage.getItem('email') || localStorage.getItem('role') != 32) {
             window.location.replace('/')
         } else {
-            fetch(`http://127.0.0.1:8000/api/teacherSchedule?email=${localStorage.getItem('email')}`)
+            fetch(`https://duyanh.codingfs.com/api/teacherSchedule?email=${localStorage.getItem('email')}`)
                 .then((res) => res.json())
                 .then((res) => {
                     console.log(res);
@@ -47,7 +47,7 @@ function ScheduleTeacher() {
             denyButtonText: `Hủy`,
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.post(`http://127.0.0.1:8000/api/taught`, {
+                axios.post(`https://duyanh.codingfs.com/api/taught`, {
                     email: localStorage.getItem('email'),
                     course_id: course_id,
                     schedule: schedule,
@@ -78,7 +78,7 @@ function ScheduleTeacher() {
                             }
                         }
                         else {
-                            fetch(`http://127.0.0.1:8000/api/teacherSchedule?email=${localStorage.getItem('email')}`)
+                            fetch(`https://duyanh.codingfs.com/api/teacherSchedule?email=${localStorage.getItem('email')}`)
                                 .then((res) => res.json())
                                 .then((res) => {
                                     console.log(res);

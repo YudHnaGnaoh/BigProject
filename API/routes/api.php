@@ -35,10 +35,6 @@ Route::controller(UserController::class)->group(function () {
     // Route::middleware(['admin'])->group(function () {
     Route::get('/role', 'role');
     Route::get('/user', 'user');
-    Route::post('/createCategory', 'createCategory');
-    Route::post('/deleteCategory', 'deleteCategory');
-    Route::post('/editCategory', 'editCategory');
-    Route::post('/switchCategory', 'switchCategory');
     Route::post('/createRole', 'createRole');
     Route::post('/deleteRole', 'deleteRole');
     Route::post('/editRole', 'editRole');

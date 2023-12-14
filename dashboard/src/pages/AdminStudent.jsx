@@ -44,7 +44,7 @@ function AdminStudent() {
     if (!localStorage.getItem('email') || localStorage.getItem('role') != 6) {
       window.location.replace('/')
     } else {
-      fetch(`http://127.0.0.1:8000/api/allStudents?page=${page}`)
+      fetch(`https://duyanh.codingfs.com/api/allStudents?page=${page}`)
         .then((res) => res.json())
         .then((res) => {
           // console.log(res);
@@ -56,7 +56,7 @@ function AdminStudent() {
   }, []);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/api/allStudents?page=${page}`)
+    fetch(`https://duyanh.codingfs.com/api/allStudents?page=${page}`)
       .then((res) => res.json())
       .then((res) => {
         // console.log(res);
@@ -91,7 +91,7 @@ function AdminStudent() {
       });
     } else {
       axios
-        .post(`http://127.0.0.1:8000/api/createStudent?page=${page}`, {
+        .post(`https://duyanh.codingfs.com/api/createStudent?page=${page}`, {
           name: newStudent,
           email: newStudentEmail,
           phone: addStudentPhone,
@@ -117,8 +117,15 @@ function AdminStudent() {
             }
           } else {
             // console.log(res.data);
+            Toast.fire({
+              icon: "success",
+              title: "Dã thêm học sinh",
+            });
             setStudent(res.data.data);
             setLastPage(res.data.last_page)
+            setNewStudent('')
+            setNewStudentEmail('')
+            setAddStudentPhone('')
           }
         });
     }
@@ -147,7 +154,7 @@ function AdminStudent() {
       });
     } else {
       axios
-        .post(`http://127.0.0.1:8000/api/editStudent?page=${page}`, {
+        .post(`https://duyanh.codingfs.com/api/editStudent?page=${page}`, {
           id: studentId,
           name: newStudentName,
           phone: newStudentPhone,
@@ -191,7 +198,7 @@ function AdminStudent() {
   const switchStudent = (id) => {
     // console.log(id);
     axios
-      .post(`http://127.0.0.1:8000/api/switchStudent?page=${page}`, {
+      .post(`https://duyanh.codingfs.com/api/switchStudent?page=${page}`, {
         id: id,
       })
       .then((res) => {
@@ -212,7 +219,7 @@ function AdminStudent() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post(`http://127.0.0.1:8000/api/deleteStudent?page=${page}`, {
+          .post(`https://duyanh.codingfs.com/api/deleteStudent?page=${page}`, {
             id: id,
           })
           .then((res) => {
@@ -374,6 +381,7 @@ function AdminStudent() {
                         type="text"
                         placeholder="Tên"
                         onChange={(e) => setNewStudent(e.target.value)}
+                        value={newStudent}
                       />
                     </td>
                     <td>
@@ -382,6 +390,7 @@ function AdminStudent() {
                         type="email"
                         placeholder="Email"
                         onChange={(e) => setNewStudentEmail(e.target.value)}
+                        value={newStudentEmail}
                       />
                     </td>
                     <td>
@@ -390,6 +399,7 @@ function AdminStudent() {
                         type="number"
                         placeholder="Số điện thoại"
                         onChange={(e) => setAddStudentPhone(e.target.value)}
+                        value={addStudentPhone}
                       />
                     </td>
                     <td colSpan={2}>

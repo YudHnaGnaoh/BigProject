@@ -38,7 +38,7 @@ function AdminEdu() {
     if (!localStorage.getItem('email') || localStorage.getItem('role') != 6) {
       window.location.replace('/')
     } else {
-      fetch("http://127.0.0.1:8000/api/education")
+      fetch("https://duyanh.codingfs.com/api/education")
         .then((res) => res.json())
         .then((res) => {
           // console.log(res);
@@ -55,7 +55,7 @@ function AdminEdu() {
       })
     }
     else {
-      axios.post('http://127.0.0.1:8000/api/createEducation', {
+      axios.post('https://duyanh.codingfs.com/api/createEducation', {
         name: newEdu,
       })
         .then((res) => {
@@ -74,6 +74,7 @@ function AdminEdu() {
               icon: 'success',
               title: 'Thêm khóa học'
             })
+            setNewEdu('')
           }
         })
     }
@@ -100,7 +101,7 @@ function AdminEdu() {
       })
     }
     else {
-      axios.post('http://127.0.0.1:8000/api/editEducation', {
+      axios.post('https://duyanh.codingfs.com/api/editEducation', {
         id: eduId,
         name: newEduName,
       })
@@ -139,7 +140,7 @@ function AdminEdu() {
   const switchEdu = (id) => {
     // console.log(id);
     axios
-      .post('http://127.0.0.1:8000/api/switchEducation', {
+      .post('https://duyanh.codingfs.com/api/switchEducation', {
         id: id,
       })
       .then((res) => {
@@ -160,7 +161,7 @@ function AdminEdu() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post('http://127.0.0.1:8000/api/deleteEducation', {
+          .post('https://duyanh.codingfs.com/api/deleteEducation', {
             id: id,
           })
           .then((res) => {
@@ -256,7 +257,7 @@ function AdminEdu() {
                   </tr>
                 )}
                 <tr>
-                  <td colSpan={2}><input className='form-control' type="text" placeholder='Thêm khóa học' onChange={(e) => setNewEdu(e.target.value)} /></td>
+                  <td colSpan={2}><input className='form-control' type="text" placeholder='Thêm khóa học' onChange={(e) => setNewEdu(e.target.value)} value={newEdu} /></td>
                   <td colSpan={2}><button className='btn btn-success w-100' onClick={() => addEdu()}>Thêm</button></td>
                 </tr>
               </tbody>

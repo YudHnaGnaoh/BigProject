@@ -30,7 +30,10 @@ function AdminSchedule() {
   const handleClose1 = () => setShow1(false);
   const handleShow1 = () => setShow1(true);
   const [show2, setShow2] = useState(false);
-  const handleClose2 = () => setShow2(false);
+  const handleClose2 = (() => {
+    setShow2(false);
+    setTime([{ time: '' }])
+  });
   const handleShow2 = () => setShow2(true);
 
   const [schedule, setSchedule] = useState([])
@@ -54,7 +57,7 @@ function AdminSchedule() {
     if (!localStorage.getItem('email') || localStorage.getItem('role') != 6) {
       window.location.replace('/')
     } else {
-      fetch(`http://127.0.0.1:8000/api/schedule?page=${page}`)
+      fetch(`https://duyanh.codingfs.com/api/schedule?page=${page}`)
         .then((res) => res.json())
         .then((res) => {
           // console.log(res);
@@ -86,13 +89,13 @@ function AdminSchedule() {
           setPerPage(res.per_page)
           setLastPage(res.last_page)
         });
-      fetch(`http://127.0.0.1:8000/api/getCate`)
+      fetch(`https://duyanh.codingfs.com/api/getCate`)
         .then((res) => res.json())
         .then((res) => {
           // console.log(res);
           setCate(res);
         });
-      fetch(`http://127.0.0.1:8000/api/teacher`)
+      fetch(`https://duyanh.codingfs.com/api/teacher`)
         .then((res) => res.json())
         .then((res) => {
           // console.log(res);
@@ -102,7 +105,7 @@ function AdminSchedule() {
   }, []);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/api/schedule?page=${page}`)
+    fetch(`https://duyanh.codingfs.com/api/schedule?page=${page}`)
       .then((res) => res.json())
       .then((res) => {
         // console.log(res);
@@ -138,7 +141,7 @@ function AdminSchedule() {
 
   const runCourse = ((cate_id) => {
     // console.log(cate_id);
-    fetch(`http://127.0.0.1:8000/api/getCourse?cate_id=${cate_id}`)
+    fetch(`https://duyanh.codingfs.com/api/getCourse?cate_id=${cate_id}`)
       .then((res) => res.json())
       .then((res) => {
         // console.log(res);
@@ -182,7 +185,7 @@ function AdminSchedule() {
       formData.append('course_id', course_id)
       formData.append('user_id', teacher_id)
       formData.append('time', stringify)
-      axios.post(`http://127.0.0.1:8000/api/createSchedule?page=${page}`,
+      axios.post(`https://duyanh.codingfs.com/api/createSchedule?page=${page}`,
         formData,
         { headers: { 'content-Type': 'multipart/form-data' } })
         .then((res) => {
@@ -227,13 +230,15 @@ function AdminSchedule() {
               item.time = parseTime
               arr.push(item)
             })
-            console.log(arr);
+            // console.log(arr);
             setSchedule(arr);
             setLastPage(res.data.last_page)
             Toast.fire({
               icon: 'success',
               title: 'Thêm lịch giảng dạy'
             })
+            setTime([{ time: '' }]);
+            handleClose1()
           }
         })
     }
@@ -257,7 +262,7 @@ function AdminSchedule() {
     // console.log(teacher_id);
     // console.log(stringify);
     else {
-      axios.post(`http://127.0.0.1:8000/api/editSchedule?page=${page}`, {
+      axios.post(`https://duyanh.codingfs.com/api/editSchedule?page=${page}`, {
         id: edit_id,
         course_id: course_id,
         user_id: teacher_id,
@@ -310,7 +315,7 @@ function AdminSchedule() {
               item.time = parseTime
               arr.push(item)
             })
-            console.log(arr);
+            // console.log(arr);
             setSchedule(arr);
             handleClose2()
             Toast.fire({
@@ -334,7 +339,7 @@ function AdminSchedule() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .post(`http://127.0.0.1:8000/api/deleteSchedule?page=${page}`, {
+          .post(`https://duyanh.codingfs.com/api/deleteSchedule?page=${page}`, {
             id: id,
           })
           .then((res) => {
@@ -371,7 +376,7 @@ function AdminSchedule() {
                 item.time = parseTime
                 arr.push(item)
               })
-              console.log(arr);
+              // console.log(arr);
               setSchedule(arr);
               setLastPage(res.data.last_page)
               Toast.fire({
@@ -465,7 +470,7 @@ function AdminSchedule() {
       {/* ============================================= Modal 2 Edit Start ============================================================ */}
       <Modal show={show2} onHide={handleClose2}>
         <Modal.Header closeButton>
-          <Modal.Title>Thêm lịch giảng dạy</Modal.Title>
+          <Modal.Title>Sửa lịch giảng dạy</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="mb-3">

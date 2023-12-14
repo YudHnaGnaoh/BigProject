@@ -50,7 +50,7 @@ function AdminBill() {
     if (!localStorage.getItem('email') || localStorage.getItem('role') != 6) {
       window.location.replace('/')
     } else {
-      fetch(`http://127.0.0.1:8000/api/getAllBill?page=${page}`)
+      fetch(`https://duyanh.codingfs.com/api/getAllBill?page=${page}`)
         .then((res) => res.json())
         .then((res) => {
           // console.log(res);
@@ -64,7 +64,7 @@ function AdminBill() {
           // console.log(res.last_page);
 
         })
-      fetch("http://127.0.0.1:8000/api/allSchedule")
+      fetch("https://duyanh.codingfs.com/api/allSchedule")
         .then((res) => res.json())
         .then((res) => {
           var arr = []
@@ -97,7 +97,7 @@ function AdminBill() {
   }, [])
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/api/getAllBill?page=${page}`)
+    fetch(`https://duyanh.codingfs.com/api/getAllBill?page=${page}`)
       .then((res) => res.json())
       .then((res) => {
         // console.log(res);
@@ -126,7 +126,7 @@ function AdminBill() {
   const makeProcess = (() => {
     setLoading(true)
     // console.log(student_name, student_id, email, phone, time, duration, teacher_id, course_id, courseName, bill_id);
-    axios.post(`http://127.0.0.1:8000/api/createClass`, {
+    axios.post(`https://duyanh.codingfs.com/api/createClass`, {
       student_id: student_id,
       courseName: courseName,
       teacher_id: teacher_id,
@@ -200,7 +200,7 @@ function AdminBill() {
           setCourse_id('');
           setDuration('');
           setBill_id('');
-          fetch(`http://127.0.0.1:8000/api/getAllBill?page=${page}`)
+          fetch(`https://duyanh.codingfs.com/api/getAllBill?page=${page}`)
             .then((res) => res.json())
             .then((res) => {
               // console.log(res);
