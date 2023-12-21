@@ -42,9 +42,11 @@ function AdminBill() {
   const [courseName, setCourseName] = useState('')
   const [bill_id, setBill_id] = useState('')
   const [schedule, setSchedule] = useState('')
+  // ================= Paginate ==========================
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState('')
   const [lastPage, setLastPage] = useState('')
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     if (!localStorage.getItem('email') || localStorage.getItem('role') != 6) {
@@ -97,11 +99,21 @@ function AdminBill() {
   }, [])
 
   useEffect(() => {
+    if (search && search != '' && search != null) {
+      fetch(`https://duyanh.codingfs.com/api/searchBill?search=${search}&page=${page}`)
+        .then((res) => res.json())
+        .then((res) => {
+          // console.log(res);
+          setInfo(res.data);
+          setLastPage(res.last_page)
+        });
+    } else {
     fetch(`https://duyanh.codingfs.com/api/getAllBill?page=${page}`)
       .then((res) => res.json())
       .then((res) => {
         // console.log(res);
         setInfo(res.data)
+        setLastPage(res.last_page)
         // setNextPage(res.next_page_url)
         // setPreviousPage(res.prev_page_url)
         // setLastPage(res.last_page)
@@ -109,7 +121,23 @@ function AdminBill() {
         // console.log(res.prev_page_url);
         // console.log(res.last_page);
       })
+    }
   }, [page])
+
+  // ====================== Search =================================================== 
+  const searchResult = async () => {
+    try {
+      const result = await axios.get(`https://duyanh.codingfs.com/api/searchBill?search=${search}&page=1`);
+      setInfo(result.data.data)
+      // console.log(result.data.data);
+      setPage(1)
+      setLastPage(result.data.last_page)
+      // console.log(result.data.data);
+    } catch (error) {
+      console.error('Tên không tồn tại:', error);
+    }
+  }
+  // ====================== Search End =================================================== 
 
   // ====================== Paginate =================================================== 
   let active = page;
@@ -284,7 +312,11 @@ function AdminBill() {
       <div className='d-flex' style={{ backgroundColor: 'rgb(240,247,255)' }}>
         <SideBar></SideBar>
         <div className='container mt-4' >
-          <h3 style={{ fontWeight: 'bold' }}>Học sinh đăng ký lớp</h3>
+          <h3 style={{ fontWeight: 'bold' }}>Hóa đơn</h3>
+          <div className="d-flex">
+            <input type="text" className="form-control mb-2 me-2" style={{ width: '200px' }} onChange={(e) => setSearch(e.target.value)} />
+            <button className="btn btn-success mb-2" onClick={() => searchResult(search)}>Tìm tên học sinh</button>
+          </div>
           <div className="table-responsive">
             <table className="table table-striped table-hover table-bordered table-light align-middle" style={{ borderRadius: '10px', overflow: 'hidden' }}>
               <thead >

@@ -25,6 +25,19 @@ class ScheduleController extends Controller
         return response()->json($schedule);
     }
 
+    public function searchSchedule(Request $request, Schedule $schedule)
+    {
+        $searchTerm = $request->input('search');
+        $schedule = DB::table('schedule_tbl')
+            ->join('courses_tbl', 'schedule_tbl.course_id', '=', 'courses_tbl.id')
+            ->join('users_tbl', 'schedule_tbl.user_id', '=', 'users_tbl.id')
+            ->join('role_tbl', 'users_tbl.role_id', '=', 'role_tbl.id')
+            ->where('courses_tbl.name', 'LIKE', "%$searchTerm%")
+            ->select('schedule_tbl.*', 'courses_tbl.name AS courseName', 'courses_tbl.cate_id AS cate_id', 'courses_tbl.grade', 'users_tbl.name AS userName', 'role_tbl.name AS roleName')
+            ->orderBy('courseName')->paginate(5);
+        return response()->json($schedule);
+    }
+
     public function allSchedule(Request $request, Schedule $schedule)
     {
         $schedule = DB::table('schedule_tbl')

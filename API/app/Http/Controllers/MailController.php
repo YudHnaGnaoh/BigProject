@@ -93,6 +93,30 @@ class MailController extends Controller
         return response()->json($bill);
     }
 
+    public function searchBill(Request $request, Student $student)
+    {
+        $searchTerm = $request->input('search');
+        $bill = DB::Table('bills_tbl')
+            ->join('schedule_tbl', 'bills_tbl.schedule_id', 'schedule_tbl.id')
+            ->join('courses_tbl', 'schedule_tbl.course_id', 'courses_tbl.id')
+            ->join('students_tbl', 'bills_tbl.email', 'students_tbl.email')
+            ->where('students_tbl.name', 'LIKE', "%$searchTerm%")
+            ->select(
+                'bills_tbl.*',
+                'bills_tbl.id AS bill_id',
+                'bills_tbl.name AS student_name',
+                'bills_tbl.status AS bill_status',
+                'schedule_tbl.*',
+                'schedule_tbl.id AS schedule_id',
+                'courses_tbl.*',
+                'courses_tbl.id AS course_id',
+                'courses_tbl.name AS course_name',
+                'students_tbl.id AS student_id'
+            )
+            ->orderBy('student_name')->paginate(5);
+        return response()->json($bill);
+    }
+
     public function createClass(Request $request, Student $student, User $user)
     {
         $Validator = Validator::make($request->all(), [

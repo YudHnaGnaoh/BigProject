@@ -30,9 +30,11 @@ function AdminProcess() {
   const [studentList, setStudentList] = useState('')
   const [allStudent, setAllStudent] = useState('')
   const [student_id, setStudent_id] = useState('')
+  // ================= Paginate ==========================
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState('')
   const [lastPage, setLastPage] = useState('')
+  const [search, setSearch] = useState('')
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -60,11 +62,22 @@ function AdminProcess() {
   }, []);
 
   useEffect(() => {
-    fetch(`https://duyanh.codingfs.com/api/getProcess?page=${page}`)
-      .then((res) => res.json())
-      .then((res) => {
-        setInfo(res.data);
-      });
+    if (search && search != '' && search != null) {
+      fetch(`https://duyanh.codingfs.com/api/searchClass?search=${search}&page=${page}`)
+        .then((res) => res.json())
+        .then((res) => {
+          // console.log(res);
+          setInfo(res.data);
+          setLastPage(res.last_page)
+        });
+    } else {
+      fetch(`https://duyanh.codingfs.com/api/getProcess?page=${page}`)
+        .then((res) => res.json())
+        .then((res) => {
+          setInfo(res.data);
+          setLastPage(res.last_page)
+        });
+    }
   }, [page])
 
   const getStudent = (i) => {
@@ -243,6 +256,21 @@ function AdminProcess() {
     )
   })
 
+  // ====================== Search =================================================== 
+  const searchResult = async () => {
+    try {
+      const result = await axios.get(`https://duyanh.codingfs.com/api/searchClass?search=${search}&page=1`);
+      setInfo(result.data.data)
+      // console.log(result.data.data);
+      setPage(1)
+      setLastPage(result.data.last_page)
+      // console.log(result.data.data);
+    } catch (error) {
+      console.error('Tên không tồn tại:', error);
+    }
+  }
+  // ====================== Search End =================================================== 
+
   // ====================== Paginate =================================================== 
   let active = page;
   let items = [];
@@ -312,6 +340,10 @@ function AdminProcess() {
         <SideBar></SideBar>
         <div className="container mt-4">
           <h3 style={{ fontWeight: 'bold' }}>Lịch lớp</h3>
+          <div className="d-flex">
+            <input type="text" className="form-control mb-2 me-2" style={{ width: '200px' }} onChange={(e) => setSearch(e.target.value)} />
+            <button className="btn btn-success mb-2" onClick={() => searchResult(search)}>Tìm tên lớp</button>
+          </div>
           <div className="table-responsive">
             <table className="table table-striped table-hover table-bordered table-light align-middle" style={{ borderRadius: '10px', overflow: 'hidden' }}>
               <thead >

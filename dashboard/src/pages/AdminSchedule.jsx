@@ -45,9 +45,11 @@ function AdminSchedule() {
   const [teacher_id, setTeacher_id] = useState('');
   const [time, setTime] = useState([{ time: '' }]);
   const [edit_id, setEdit_id] = useState('')
+  // ================= Paginate ==========================
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState('')
   const [lastPage, setLastPage] = useState('')
+  const [search, setSearch] = useState('')
   // const [from, setFrom] = useState('');
   // console.log(schedule);
   // console.log(course_id);
@@ -105,38 +107,65 @@ function AdminSchedule() {
   }, []);
 
   useEffect(() => {
-    fetch(`https://duyanh.codingfs.com/api/schedule?page=${page}`)
-      .then((res) => res.json())
-      .then((res) => {
-        // console.log(res);
-        var arr = []
-        res.data.forEach((el) => {
-          var item = new Object()
-          // console.log(item);
-          item.id = el.id;
-          item.course_id = el.course_id;
-          item.user_id = el.user_id;
-          item.cate_id = el.cate_id;
-          item.courseName = el.courseName;
-          item.grade = el.grade;
-          item.roleName = el.roleName;
-          item.userName = el.userName;
-          item.created_at = el.created_at;
-          var parseTime = JSON.parse(el.time);
-          // console.log(parseTime);
-          // var str = ''
-          // str += ''
-          // parseTime.forEach((el1) => {
-          //   str += el1
-          // })
-          item.time = parseTime
-          arr.push(item)
-        })
-        // console.log(arr);
-        setSchedule(arr);
-        setPerPage(res.per_page)
-        setLastPage(res.last_page)
-      });
+    if (search && search != '' && search != null) {
+      fetch(`https://duyanh.codingfs.com/api/searchSchedule?search=${search}&page=${page}`)
+        .then((res) => res.json())
+        .then((res) => {
+          // console.log(res);
+          var arr = []
+          res.data.forEach((el) => {
+            var item = new Object()
+            // console.log(item);
+            item.id = el.id;
+            item.course_id = el.course_id;
+            item.user_id = el.user_id;
+            item.cate_id = el.cate_id;
+            item.courseName = el.courseName;
+            item.grade = el.grade;
+            item.roleName = el.roleName;
+            item.userName = el.userName;
+            item.created_at = el.created_at;
+            var parseTime = JSON.parse(el.time);
+            item.time = parseTime
+            arr.push(item)
+          })
+          setSchedule(arr);
+          setLastPage(res.last_page)
+        });
+    } else {
+      fetch(`https://duyanh.codingfs.com/api/schedule?page=${page}`)
+        .then((res) => res.json())
+        .then((res) => {
+          // console.log(res);
+          var arr = []
+          res.data.forEach((el) => {
+            var item = new Object()
+            // console.log(item);
+            item.id = el.id;
+            item.course_id = el.course_id;
+            item.user_id = el.user_id;
+            item.cate_id = el.cate_id;
+            item.courseName = el.courseName;
+            item.grade = el.grade;
+            item.roleName = el.roleName;
+            item.userName = el.userName;
+            item.created_at = el.created_at;
+            var parseTime = JSON.parse(el.time);
+            // console.log(parseTime);
+            // var str = ''
+            // str += ''
+            // parseTime.forEach((el1) => {
+            //   str += el1
+            // })
+            item.time = parseTime
+            arr.push(item)
+          })
+          // console.log(arr);
+          setSchedule(arr);
+          // setPerPage(res.per_page)
+          setLastPage(res.last_page)
+        });
+    }
   }, [page])
 
   const runCourse = ((cate_id) => {
@@ -167,7 +196,6 @@ function AdminSchedule() {
     setTime(DMTime)
     // console.log(updateModuleTime);
   }
-
 
   const createSchedule = (() => {
     // console.log(course_id, teacher_id);
@@ -389,6 +417,40 @@ function AdminSchedule() {
     });
   }
 
+  // ====================== Search =================================================== 
+  const searchResult = async () => {
+    try {
+      const result = await axios.get(`https://duyanh.codingfs.com/api/searchSchedule?search=${search}&page=1`);
+      // setSchedule(result.data.data)
+      // console.log(result.data.data);
+      var arr = []
+      result.data.data.forEach((el) => {
+        var item = new Object()
+        // console.log(item);
+        item.id = el.id;
+        item.course_id = el.course_id;
+        item.user_id = el.user_id;
+        item.cate_id = el.cate_id;
+        item.courseName = el.courseName;
+        item.grade = el.grade;
+        item.roleName = el.roleName;
+        item.userName = el.userName;
+        item.created_at = el.created_at;
+        var parseTime = JSON.parse(el.time);
+        item.time = parseTime
+        arr.push(item)
+      })
+        console.log(arr);
+      setSchedule(arr);
+      setPage(1)
+      setLastPage(result.data.last_page)
+      // console.log(result.data.data);
+    } catch (error) {
+      console.error('Tên không tồn tại:', error);
+    }
+  }
+  // ====================== Search End =================================================== 
+
   // ====================== Paginate =================================================== 
   let active = page;
   let items = [];
@@ -420,7 +482,7 @@ function AdminSchedule() {
           <div className="mb-3">
             <label className="form-label">Chọn lớp</label><br />
             <select className='form-control' name="" value={course_id} onChange={(e) => setCourse_id(e.target.value)} id="">
-            <option value={''} hidden>lớp</option>
+              <option value={''} hidden>lớp</option>
               {!course || course == '' || course == null ?
                 null
                 :
@@ -535,11 +597,15 @@ function AdminSchedule() {
         <div className='container mt-4' >
           <h3 style={{ fontWeight: 'bold' }}>Lịch giảng dạy</h3>
           <button className='btn btn-success mb-2' onClick={() => [handleShow1(), setCourse_id(''), setCourse('')]}>Thêm</button>
+          <div className="d-flex">
+            <input type="text" className="form-control mb-2 me-2" style={{ width: '200px' }} onChange={(e) => setSearch(e.target.value)} />
+            <button className="btn btn-success mb-2" onClick={() => searchResult(search)}>Tìm tên lớp</button>
+          </div>
           <div className="table-responsive">
             <table className="table table-striped table-hover table-bordered table-light align-middle" style={{ borderRadius: '10px', overflow: 'hidden' }}>
               <thead >
                 <tr className='align-middle'>
-                  <th>Tên</th>
+                  <th>Tên lớp</th>
                   <th>Thời gian</th>
                   <th>Giảng viên</th>
                   <th>Sửa</th>

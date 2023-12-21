@@ -110,6 +110,20 @@ class ProcessController extends Controller
         return response()->json($process);
     }
 
+    public function searchClass(Request $request)
+    {
+        $searchTerm = $request->input('search');
+        $process = DB::Table('process_tbl')
+            ->join('users_tbl', 'process_tbl.teacher_id', 'users_tbl.id')
+            ->join('process_detail_tbl', 'process_tbl.id', 'process_detail_tbl.process_id')
+            ->groupBy('process_tbl.id')
+            ->where('process_tbl.name', 'LIKE', "%$searchTerm%")
+            ->select('process_tbl.*', 'process_tbl.name AS className', 'users_tbl.name AS teacher', DB::raw('count(process_detail_tbl.student_id) as student_count'))
+            ->orderBy('className')
+            ->paginate(5);
+        return response()->json($process);
+    }
+
     public function getStudents(Request $request)
     {
         $Validator = Validator::make($request->all(), [

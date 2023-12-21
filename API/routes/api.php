@@ -35,6 +35,7 @@ Route::controller(UserController::class)->group(function () {
     // Route::middleware(['admin'])->group(function () {
     Route::get('/role', 'role');
     Route::get('/user', 'user');
+    Route::get('/searchUser', 'searchUser');
     Route::post('/createRole', 'createRole');
     Route::post('/deleteRole', 'deleteRole');
     Route::post('/editRole', 'editRole');
@@ -97,6 +98,7 @@ Route::controller(CourseController::class)->group(function () {
 
 Route::controller(ScheduleController::class)->group(function () {
     Route::get('/schedule', 'schedule');
+    Route::get('/searchSchedule', 'searchSchedule');
     Route::get('/allSchedule', 'allSchedule');
     Route::get('/getCate', 'getCate');
     Route::get('/getCourse', 'getCourse');
@@ -112,6 +114,7 @@ Route::controller(ProcessController::class)->group(function () {
     Route::get('/studentSchedule', 'studentSchedule');
     Route::post('/taught', 'taught');
     Route::get('/getProcess', 'getProcess');
+    Route::get('/searchClass', 'searchClass');
     Route::get('/getStudents', 'getStudents');
     Route::post('/addStudent', 'addStudent');
     Route::post('/removeStudent', 'removeStudent');
@@ -123,6 +126,7 @@ Route::controller(ProcessController::class)->group(function () {
 Route::controller(MailController::class)->group(function () {
     Route::post('/sendMail', 'sendMail');
     Route::get('/getAllBill', 'getAllBill');
+    Route::get('/searchBill', 'searchBill');
     Route::post('/createClass', 'createClass');
     Route::post('/signUp', 'signUp');
 });

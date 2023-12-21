@@ -44,7 +44,18 @@ class UserController extends Controller
         $user = DB::Table('users_tbl')
             ->join('role_tbl', 'users_tbl.role_id', 'role_tbl.id')
             ->select('users_tbl.*', 'role_tbl.name as rolename')
-            ->orderBy('users_tbl.email')->paginate(5);
+            ->orderBy('users_tbl.name')->paginate(5);
+        return response()->json($user);
+    }
+
+    public function searchUser(Request $request, User $user)
+    {
+        $searchTerm = $request->input('search');
+        $user = DB::Table('users_tbl')
+            ->join('role_tbl', 'users_tbl.role_id', 'role_tbl.id')
+            ->where('users_tbl.name', 'LIKE', "%$searchTerm%")
+            ->select('users_tbl.*', 'role_tbl.name as rolename')
+            ->orderBy('users_tbl.name')->paginate(5);
         return response()->json($user);
     }
 
