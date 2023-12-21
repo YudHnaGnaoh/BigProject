@@ -49,6 +49,12 @@ class StudentController extends Controller
         return response()->json(Student::orderBy('email')->get());
     }
 
+    public function searchStudents(Request $request, Student $student)
+    {
+        $searchTerm = $request->input('search');
+        return response()->json(Student::where('name', 'LIKE', "%$searchTerm%")->orderBy('name')->paginate(5));
+    }
+
     public function createStudent(Request $request, Student $student)
     {
         $Validator = Validator::make($request->all(), [

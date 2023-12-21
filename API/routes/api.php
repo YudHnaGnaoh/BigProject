@@ -50,6 +50,7 @@ Route::controller(StudentController::class)->group(function () {
     Route::post('/loginStudent', 'loginStudent');
     Route::get('/allStudents', 'allStudents');
     Route::get('/allStudents2', 'allStudents2');
+    Route::get('/searchStudents', 'searchStudents');
     Route::post('/createStudent', 'createStudent');
     Route::post('/deleteStudent', 'deleteStudent');
     Route::post('/editStudent', 'editStudent');

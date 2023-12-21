@@ -39,6 +39,7 @@ function AdminStudent() {
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState('')
   const [lastPage, setLastPage] = useState('')
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     if (!localStorage.getItem('email') || localStorage.getItem('role') != 6) {
@@ -54,15 +55,36 @@ function AdminStudent() {
         });
     }
   }, []);
-
   useEffect(() => {
-    fetch(`https://duyanh.codingfs.com/api/allStudents?page=${page}`)
-      .then((res) => res.json())
-      .then((res) => {
-        // console.log(res);
-        setStudent(res.data);
-      });
+    if (search && search != '' && search != null) {
+      fetch(`https://duyanh.codingfs.com/api/searchStudents?search=${search}&page=${page}`)
+        .then((res) => res.json())
+        .then((res) => {
+          // console.log(res);
+          setStudent(res.data);
+          setLastPage(res.last_page)
+        });
+    } else {
+      fetch(`https://duyanh.codingfs.com/api/allStudents?page=${page}`)
+        .then((res) => res.json())
+        .then((res) => {
+          // console.log(res);
+          setStudent(res.data);
+          setLastPage(res.last_page)
+        });
+    }
   }, [page])
+
+  // useEffect(() => {
+  //   if (search) {
+  //     fetch(`https://duyanh.codingfs.com/api/searchStudents?search=${search}&page=${pageSearch}`)
+  //       .then((res) => res.json())
+  //       .then((res) => {
+  //         // console.log(res);
+  //         setStudent(res.data);
+  //       });
+  //   }
+  // }, [pageSearch])
 
   const addStudent = () => {
     if (newStudent == "") {
@@ -249,6 +271,21 @@ function AdminStudent() {
     });
   };
 
+  // ====================== Search =================================================== 
+  const searchResult = async () => {
+    try {
+      const result = await axios.get(`https://duyanh.codingfs.com/api/searchStudents?search=${search}&page=1`);
+      setStudent(result.data.data)
+      // console.log(result.data.data);
+      setPage(1)
+      setLastPage(result.data.last_page)
+      // console.log(result.data.data);
+    } catch (error) {
+      console.error('Tên không tồn tại:', error);
+    }
+  }
+  // ====================== Search End =================================================== 
+
   // ====================== Paginate =================================================== 
   let active = page;
   let items = [];
@@ -258,7 +295,9 @@ function AdminStudent() {
         {number}
       </Pagination.Item>,
     );
+
   }
+
   // ====================== Paginate End =================================================== 
 
   return (
@@ -305,6 +344,10 @@ function AdminStudent() {
         <div className="container mt-4">
           <div className="row">
             <h3 style={{ fontWeight: "bold" }}>Học sinh</h3>
+            <div className="d-flex">
+              <input type="text" className="form-control mb-2 me-2" style={{ width: '200px' }} onChange={(e) => setSearch(e.target.value)} />
+              <button className="btn btn-success mb-2" onClick={() => searchResult(search)}>Tìm tên</button>
+            </div>
             <div className="table-responsive">
               <table
                 className="table table-striped table-hover table-bordered table-light align-middle"
